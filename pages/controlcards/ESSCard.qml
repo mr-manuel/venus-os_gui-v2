@@ -105,5 +105,18 @@ ControlCard {
 				color: Theme.color_font_disabled
 			}
 		}
+
+		FlatListItemSeparator { visible: activeSocLimit.visible }
+
+		ListSpinBox {
+			//% "Grid setpoint"
+			text: qsTrId("settings_ess_grid_setpoint")
+			flat: true
+			preferredVisible: essMode.value !== VenusOS.Ess_Hub4ModeState_Disabled
+			dataItem.uid: Global.systemSettings.serviceUid + "/Settings/CGwacs/AcPowerSetPoint"
+			suffix: Units.defaultUnitString(VenusOS.Units_Watt)
+			stepSize: 10
+			presets: [ -500, -100, -10, 0, 10, 100, 500 ].map(function(v) { return { value: v } })
+		}
 	}
 }
