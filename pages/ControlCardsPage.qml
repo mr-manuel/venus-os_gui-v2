@@ -22,6 +22,11 @@ Page {
 		bottomMargin: Theme.geometry_controlCardsPage_bottomMargin
 	}
 
+	VeQuickItem {
+		id: systemType
+		uid: Global.system.serviceUid + "/SystemType"
+	}
+
 	// The cards list view is made up of:
 	// - Header - ESS card
 	// - Per-device Control Cards for EVCS, Generators, Inverter/chargers
@@ -58,9 +63,101 @@ Page {
 				}
 			}
 
-			VeQuickItem {
-				id: systemType
-				uid: Global.system.serviceUid + "/SystemType"
+			Row {
+				spacing: cardsView.spacing
+
+				// Shown based on conditions
+				ListItemLoader {
+					active: systemType.value === "ESS" || systemType.value === "Hub-4"
+					sourceComponent: FocusScope {
+						width: root.cardWidth
+						height: cardsView.height
+						focus: true
+
+						ESSCard {
+							width: root.cardWidth
+							height: cardsView.height
+						}
+					}
+				}
+
+				// Always shown
+				/*
+				ESSCustomCard {
+					width: root.cardWidth
+					height: cardsView.height
+					background.visible: false
+					KeyNavigationHighlight.active: false
+
+					ManuCard {
+						width: root.cardWidth
+						height: cardsView.height
+					}
+				}
+				*/
+			}
+		}
+
+		footer: Item {
+
+
+			width: root.cardWidth * 2 + cardsView.spacing * 1
+			height: cardsView.height
+
+			Row {
+
+				spacing: cardsView.spacing
+
+				// Dummy needed for correct spacing
+				Item {
+					width: 1
+					height: cardsView.height
+				}
+
+				// Shown based on conditions
+				ListItemLoader {
+					active: systemType.value === "ESS" || systemType.value === "Hub-4"
+					sourceComponent: FocusScope {
+						width: root.cardWidth
+						height: cardsView.height
+						focus: true
+
+						ESSCustomCard {
+							width: root.cardWidth
+							height: cardsView.height
+						}
+					}
+				}
+
+				// Shown based on conditions
+				ListItemLoader {
+					active: systemType.value === "ESS" || systemType.value === "Hub-4"
+					sourceComponent: FocusScope {
+						width: root.cardWidth
+						height: cardsView.height
+						focus: true
+
+						DVCCCustomCard {
+							width: root.cardWidth
+							height: cardsView.height
+						}
+					}
+				}
+
+				// Always shown
+				/*
+				ESSCustomCard {
+					width: root.cardWidth
+					height: cardsView.height
+					background.visible: false
+					KeyNavigationHighlight.active: false
+
+					ManuCard {
+						width: root.cardWidth
+						height: cardsView.height
+					}
+				}
+				*/
 			}
 		}
 

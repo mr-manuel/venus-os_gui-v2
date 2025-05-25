@@ -77,7 +77,7 @@ ControlCard {
 			}
 		}
 
-		FlatListItemSeparator { visible: minSocLimit.visible && activeSocLimit.visible}
+		FlatListItemSeparator { visible: minSocLimit.visible}
 
 		ListInfoLabel {
 			id: activeSocLimit
@@ -95,5 +95,7 @@ ControlCard {
 				}
 			}
 		}
+
+		FlatListItemSeparator { visible: activeSocLimit.visible }
 	}
 }
