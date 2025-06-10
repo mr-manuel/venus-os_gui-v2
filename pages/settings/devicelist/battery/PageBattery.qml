@@ -132,14 +132,19 @@ Page {
 
 			ListQuantityItem {
 				readonly property VeQuickItem _n2kDeviceInstance: VeQuickItem {
-					uid: battery.serviceUid + "/N2kDeviceInstance"
+					uid: root.battery.serviceUid + "/N2kDeviceInstance"
 				}
 
 				//% "System voltage"
 				text: qsTrId("devicelist_battery_system_voltage")
 				dataItem.uid: BackendConnection.serviceUidFromName("com.victronenergy.battery.lynxparallel" + _n2kDeviceInstance.value, _n2kDeviceInstance.value) + "/Dc/0/Voltage"
-				allowed: defaultAllowed && !root.isParallelBms && root.battery.state === VenusOS.Battery_State_Pending
+				allowed: defaultAllowed && !root.isParallelBms && batteryState.value === VenusOS.Battery_State_Pending
 				unit: VenusOS.Units_Volt_DC
+
+				VeQuickItem {
+					id: batteryState
+					uid: root.battery.serviceUid + "/State"
+				}
 			}
 
 			ListTextItem {
@@ -152,7 +157,7 @@ Page {
 
 			ListQuantityItem {
 				text: CommonWords.state_of_charge
-				value: root.battery.stateOfCharge
+				dataItem.uid: root.battery.serviceUid + "/Soc"
 				unit: VenusOS.Units_Percentage
 			}
 
@@ -198,7 +203,7 @@ Page {
 				//% "Top section voltage"
 				text: qsTrId("battery_top_section_voltage")
 				allowed: midVoltage.isValid
-				value: midVoltage.isValid && !isNaN(root.battery.voltage) ? root.battery.voltage - midVoltage.value : NaN
+				value: midVoltage.isValid && batteryVoltage.isValid ? batteryVoltage.value - midVoltage.value : NaN
 				unit: VenusOS.Units_Volt_DC
 			}
 
@@ -239,7 +244,7 @@ Page {
 				text: qsTrId("battery_time_to_go")
 				dataItem.uid: root.battery.serviceUid + "/TimeToGo"
 				allowed: defaultAllowed && dataItem.seen
-				secondaryText: Utils.secondsToString(root.battery.timeToGo)
+				secondaryText: Utils.secondsToString(dataItem.value)
 			}
 
 			ListRelayState {
@@ -248,6 +253,106 @@ Page {
 
 			ListAlarmState {
 				dataItem.uid: root.battery.serviceUid + "/Alarms/Alarm"
+			}
+
+			ListNavigationItem {
+				text: "dbus-serialbattery - General"
+				allowed: defaultAllowed && cvl.isValid || ccl.isValid || dcl.isValid
+				/*
+				allowed: defaultAllowed && {
+					// mr-manuel/dbus-serialbattery
+					productId.value === 0xBA77
+					// Dr-Gigavolt/dbus-aggregate-batteries
+					|| productId.value === 0xBA44
+				}
+				*/
+				onClicked: {
+					Global.pageManager.pushPage("/pages/settings/devicelist/battery/PageBatteryDbusSerialbattery.qml",
+							{ "title": text, "bindPrefix": root.battery.serviceUid })
+				}
+			}
+
+			ListNavigationItem {
+				text: "dbus-serialbattery - Cell Voltages"
+				allowed: defaultAllowed && cell3Voltage.isValid
+				onClicked: {
+					Global.pageManager.pushPage("/pages/settings/devicelist/battery/PageBatteryDbusSerialbatteryCellVoltages.qml",
+							{ "title": text, "bindPrefix": root.battery.serviceUid })
+				}
+
+				VeQuickItem {
+					id: cell3Voltage
+					uid: root.battery.serviceUid + "/Voltages/Cell3"
+				}
+			}
+
+			ListNavigationItem {
+				text: "dbus-serialbattery - Settings"
+				// show only for mr-manuel/dbus-serialbattery (productId registered at Victron)
+				allowed: defaultAllowed && productId.value === 0xBA77
+				onClicked: {
+					Global.pageManager.pushPage("/pages/settings/devicelist/battery/PageBatteryDbusSerialbatterySettings.qml",
+							{ "title": text, "bindPrefix": root.battery.serviceUid })
+				}
+			}
+
+			ListNavigationItem {
+				text: "dbus-serialbattery - Time to SoC"
+				allowed: defaultAllowed && timeToSoc0.seen ||
+						timeToSoc5.seen ||
+						timeToSoc10.seen ||
+						timeToSoc15.seen ||
+						timeToSoc20.seen ||
+						timeToSoc80.seen ||
+						timeToSoc85.seen ||
+						timeToSoc90.seen ||
+						timeToSoc95.seen ||
+						timeToSoc100.seen
+				onClicked: {
+					Global.pageManager.pushPage("/pages/settings/devicelist/battery/PageBatteryDbusSerialbatteryTimeToSoc.qml",
+							{ "title": text, "bindPrefix": root.battery.serviceUid })
+				}
+
+				VeQuickItem {
+					id: timeToSoc0
+					uid: root.battery.serviceUid + "/TimeToSoC/0"
+				}
+				VeQuickItem {
+					id: timeToSoc5
+					uid: root.battery.serviceUid + "/TimeToSoC/5"
+				}
+				VeQuickItem {
+					id: timeToSoc10
+					uid: root.battery.serviceUid + "/TimeToSoC/10"
+				}
+				VeQuickItem {
+					id: timeToSoc15
+					uid: root.battery.serviceUid + "/TimeToSoC/15"
+				}
+				VeQuickItem {
+					id: timeToSoc20
+					uid: root.battery.serviceUid + "/TimeToSoC/20"
+				}
+				VeQuickItem {
+					id: timeToSoc80
+					uid: root.battery.serviceUid + "/TimeToSoC/80"
+				}
+				VeQuickItem {
+					id: timeToSoc85
+					uid: root.battery.serviceUid + "/TimeToSoC/85"
+				}
+				VeQuickItem {
+					id: timeToSoc90
+					uid: root.battery.serviceUid + "/TimeToSoC/90"
+				}
+				VeQuickItem {
+					id: timeToSoc95
+					uid: root.battery.serviceUid + "/TimeToSoC/95"
+				}
+				VeQuickItem {
+					id: timeToSoc100
+					uid: root.battery.serviceUid + "/TimeToSoC/100"
+				}
 			}
 
 			ListNavigationItem {
