@@ -570,6 +570,10 @@ set (VENUS_QML_MODULE_SOURCES
     pages/settings/devicelist/battery/Page48TlDiagnostics.qml
     pages/settings/devicelist/battery/PageBattery.qml
     pages/settings/devicelist/battery/PageBatteryAlarms.qml
+    pages/settings/devicelist/battery/PageBatteryDbusSerialbattery.qml
+    pages/settings/devicelist/battery/PageBatteryDbusSerialbatteryCellVoltages.qml
+    pages/settings/devicelist/battery/PageBatteryDbusSerialbatterySettings.qml
+    pages/settings/devicelist/battery/PageBatteryDbusSerialbatteryTimeToSoc.qml
     pages/settings/devicelist/battery/PageBatteryDetails.qml
     pages/settings/devicelist/battery/PageBatteryHistory.qml
     pages/settings/devicelist/battery/PageBatteryModuleAlarms.qml
@@ -1248,4 +1252,3 @@ add_custom_target(
     DEPENDS "${PROJECT_SOURCE_DIR}/src/themeobjects.h"
 )
 add_dependencies(${PROJECT_NAME} theme_parser)
-
