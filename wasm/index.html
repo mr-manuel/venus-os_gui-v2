@@ -26,8 +26,10 @@
         font-family: "Roboto", sans-serif;
       }
       #logo {
+        display: block;
         content: url('victronenergy.svg');
         width: 300px; height: 54px;
+        margin-top: 40px;
       }
       #mockup {
         display: none; z-index: 0;
@@ -49,7 +51,7 @@
         max-width: 1024px;
         max-height: calc(100% - env(safe-area-inset-bottom));
         aspect-ratio: 1024/600;
-        position: relative; background: #000; color: #fff; text-align: center;
+        position: relative; background: #000; color: #969591; text-align: center;
       }
       #qtspinner {
         width: 100%; height: 100%; position: absolute; top: 0; left: 0; margin: 0;
@@ -61,6 +63,33 @@
         width: 100%; height: 100%; position: absolute; top: 0; left: 0; margin: 0;
         z-index: 2;
       }
+      #loading-bar-container {
+        width: 45%;
+        max-width: 464px;
+        height: 8px;
+        background: #11263B;
+        border-radius: 2px;
+        display: none;
+        position: relative;
+        overflow: hidden;
+      }
+      #loading-bar {
+        position:absolute;
+        left:0;
+        top:0;
+        width:0%;
+        height:100%;
+        background:#387DC5;
+        border-radius: 10px 0 0 10px;
+      }
+      #loading-bar-text {
+        font-size: 18px;
+        color: #969591;
+        margin-top: 10px;
+        text-align: center;
+        font-family: Roboto;
+        font-weight: 400;
+      }
       @media (prefers-color-scheme: light) {
         html, body {
           background: #E6E5E1; color: #1D1D1B;
@@ -69,7 +98,10 @@
           content: url('victronenergy-light.svg');
         }
         #wrapper-inner {
-          background: #E6E5E1; color: #1D1D1B;
+          background: #E6E5E1; color: #64635F;
+        }
+        #loading-bar-text {
+            color: #64635F;
         }
       }
     </style>
@@ -79,8 +111,12 @@
     <div id="wrapper-outer">
       <div id="wrapper-inner">
         <figure id="qtspinner">
-          <img id="logo" style="display:block"></img>
+          <img id="logo"></img>
           <div id="qtstatus"></div>
+          <div id="loading-bar-container">
+            <div id="loading-bar"></div>
+          </div>
+          <div id="loading-bar-text"></div>
           <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
         </figure>
         <div id="screen"></div>
@@ -113,6 +149,45 @@
             check(location.href, 30, 1000, (function() { location.reload(); }), (function() { console.log("Failed to reload gui-v2: web server unavailable"); }) );
         }
 
+        async function preloadWasm(url, onProgress) {
+            let total = null;
+            // this is needed, since the reported size is the compressed size
+            // but the downloaded size is shown as uncompressed size, since the browser decompresses it
+            const sizeResp = await fetch('venus-gui-v2.wasm.size');
+
+            // Load WASM after the size is fetched, else the size is not downloaded
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Failed to fetch WASM");
+
+            if (sizeResp.ok) {
+                total = parseInt(await sizeResp.text(), 10);
+            } else {
+                // should not be needed, but just in case?
+                const estimatedCompressionRatio = 0.4; // Assume 40% as compressed size
+                const contentLength = response.headers.get('content-length');
+                total = contentLength ? parseInt(contentLength, 10) / estimatedCompressionRatio : null;
+                console.warn("venus-gui-v2.wasm.size not found, using estimated size of " + (total ? (total / 1024).toFixed(2) + ' KB' : 'unknown'));
+            }
+
+            const reader = response.body.getReader();
+            let received = 0;
+            let chunks = [];
+            while (true) {
+                const {done, value} = await reader.read();
+                if (done) break;
+                chunks.push(value);
+                received += value.length;
+                onProgress(received, total);
+            }
+            let wasmBinary = new Uint8Array(received);
+            let pos = 0;
+            for (let chunk of chunks) {
+                wasmBinary.set(chunk, pos);
+                pos += chunk.length;
+            }
+            return wasmBinary;
+        }
+
         async function init()
         {
             const spinner = document.querySelector('#qtspinner');
@@ -120,6 +195,9 @@
             const status = document.querySelector('#qtstatus');
             const mockup = document.querySelector('#mockup');
             const wrapper_inner = document.querySelector('#wrapper-inner');
+            const loadingBarContainer = document.getElementById('loading-bar-container');
+            const loadingBar = document.getElementById('loading-bar');
+            const loadingBarText = document.getElementById('loading-bar-text');
 
             const showUi = (ui) => {
                 [spinner, screen].forEach(element => element.style.visibility = 'hidden');
@@ -152,11 +230,32 @@
 
             try {
                 showUi(spinner);
-                status.innerHTML = 'Loading...';
+                // status.innerHTML = 'Loading...';
+                loadingBarContainer.style.display = 'block';
+                loadingBar.style.width = '0%';
+                loadingBarText.textContent = 'Downloading...';
+
+                // Preload WASM with progress
+                const wasmBinary = await preloadWasm('venus-gui-v2.wasm', (received, total) => {
+                    if (total) {
+                        const percent = (received / total * 100).toFixed(1);
+                        loadingBar.style.width = percent + '%';
+                        loadingBarText.textContent = `Downloading... ${percent}%`;
+                    // If total is unknown, show the received size in MB
+                    } else {
+                        loadingBar.style.width = '100%';
+                        loadingBarText.textContent =
+                            `Downloading... ${(received/(1024*1024)).toFixed(2)} MB`;
+                    }
+                });
+
+                loadingBar.style.width = '100%';
+                loadingBarText.textContent = 'Loading application...';
 
                 let defaultMqttArg = (location.protocol === 'https:' ? 'wss://' : 'ws://') + document.location.host + '/websocket-mqtt'
-                const instance = await qtLoad({
+                await qtLoad({
                     arguments: needsDefaultArgs ? ['--mqtt', defaultMqttArg] : [],
+                    wasmBinary: wasmBinary,
                     qt: {
                         onLoaded: () => showUi(screen),
                         onExit: exitData =>
