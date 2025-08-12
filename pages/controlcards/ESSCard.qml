@@ -75,18 +75,18 @@ ControlCard {
 			}
 		}
 
-		FlatListItemSeparator { visible: minSocLimit.visible && activeSocLimit.visible}
+		FlatListItemSeparator { visible: minSocLimit.visible}
 
 		ListItem {
 			id: activeSocLimit
 
-			visible: Global.systemSettings.ess.state === VenusOS.Ess_State_OptimizedWithBatteryLife
 			//% "Active SOC Limit: %1%"
 			text: qsTrId("ess_active_soc_limit").arg(Math.max(Global.systemSettings.ess.minimumStateOfCharge, Global.systemSettings.ess.stateOfChargeLimit))
 			flat: true
 			primaryLabel.color: Theme.color_font_disabled
 			leftPadding: infoIcon.x + infoIcon.width + infoIcon.x/2
 			interactive: true
+			visible: Global.systemSettings.ess.state === VenusOS.Ess_State_OptimizedWithBatteryLife
 
 			onClicked: {
 				//% "BatteryLife dynamically adjusts the minimum battery state of charge to prevent deep discharges and ensure regular full charges, helping to prolong battery life and maintain system reliability."
@@ -104,16 +104,5 @@ ControlCard {
 		}
 
 		FlatListItemSeparator { visible: activeSocLimit.visible }
-
-		ListSpinBox {
-			//% "Grid setpoint"
-			text: qsTrId("settings_ess_grid_setpoint")
-			flat: true
-			preferredVisible: essMode.value !== VenusOS.Ess_Hub4ModeState_Disabled
-			dataItem.uid: Global.systemSettings.serviceUid + "/Settings/CGwacs/AcPowerSetPoint"
-			suffix: Units.defaultUnitString(VenusOS.Units_Watt)
-			stepSize: 10
-			presets: [ -500, -100, -10, 0, 10, 100, 500 ].map(function(v) { return { value: v } })
-		}
 	}
 }
