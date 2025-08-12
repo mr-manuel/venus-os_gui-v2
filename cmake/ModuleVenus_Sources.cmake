@@ -329,7 +329,9 @@ set (VictronVenusOS_QML_MODULE_SOURCES
     pages/PageManager.qml
     pages/SettingsPage.qml
     pages/TanksTab.qml
+    pages/controlcards/DVCCCustomCard.qml
     pages/controlcards/ESSCard.qml
+    pages/controlcards/ESSCustomCard.qml
     pages/controlcards/EVCSCard.qml
     pages/controlcards/GeneratorCard.qml
     pages/controlcards/InverterChargerCard.qml
