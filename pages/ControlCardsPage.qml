@@ -22,6 +22,11 @@ Page {
 		bottomMargin: Theme.geometry_controlCardsPage_bottomMargin
 	}
 
+	VeQuickItem {
+		id: systemType
+		uid: Global.system.serviceUid + "/SystemType"
+	}
+
 	// The cards list view is made up of:
 	// - Header - ESS card
 	// - Per-device Control Cards for EVCS, Generators, Inverter/chargers
@@ -36,23 +41,109 @@ Page {
 		spacing: Theme.geometry_controlCardsPage_spacing
 		orientation: ListView.Horizontal
 
-		header: BaseListLoader {
-			active: systemType.value === "ESS" || systemType.value === "Hub-4"
-			sourceComponent: BaseListItem {
-				width: root.cardWidth + cardsView.spacing
-				height: cardsView.height
-				background.visible: false
-				KeyNavigationHighlight.active: false
+		header: Item {
+			// width: (root.cardWidth + cardsView.spacing) * 2
+			width: root.cardWidth + cardsView.spacing
+			height: cardsView.height
 
-				ESSCard {
+			Row {
+				spacing: cardsView.spacing
+
+				// Shown based on conditions
+				BaseListLoader {
+					active: systemType.value === "ESS" || systemType.value === "Hub-4"
+					sourceComponent: BaseListItem {
+						width: root.cardWidth
+						height: cardsView.height
+						background.visible: false
+						KeyNavigationHighlight.active: false
+
+						ESSCard {
+							width: root.cardWidth
+							height: cardsView.height
+						}
+					}
+				}
+
+				// Always shown
+				/*
+				ESSCustomCard {
 					width: root.cardWidth
 					height: cardsView.height
-				}
-			}
+					background.visible: false
+					KeyNavigationHighlight.active: false
 
-			VeQuickItem {
-				id: systemType
-				uid: Global.system.serviceUid + "/SystemType"
+					ManuCard {
+						width: root.cardWidth
+						height: cardsView.height
+					}
+				}
+				*/
+			}
+		}
+
+		footer: Item {
+
+
+			width: root.cardWidth * 2 + cardsView.spacing * 1
+			height: cardsView.height
+
+			Row {
+
+				spacing: cardsView.spacing
+
+				// Dummy needed for correct spacing
+				Item {
+					width: 1
+					height: cardsView.height
+				}
+
+				// Shown based on conditions
+				BaseListLoader {
+					active: systemType.value === "ESS" || systemType.value === "Hub-4"
+					sourceComponent: BaseListItem {
+						width: root.cardWidth
+						height: cardsView.height
+						background.visible: false
+						KeyNavigationHighlight.active: false
+
+						ESSCustomCard {
+							width: root.cardWidth
+							height: cardsView.height
+						}
+					}
+				}
+
+				// Shown based on conditions
+				BaseListLoader {
+					active: systemType.value === "ESS" || systemType.value === "Hub-4"
+					sourceComponent: BaseListItem {
+						width: root.cardWidth
+						height: cardsView.height
+						background.visible: false
+						KeyNavigationHighlight.active: false
+
+						DVCCCustomCard {
+							width: root.cardWidth
+							height: cardsView.height
+						}
+					}
+				}
+
+				// Always shown
+				/*
+				ESSCustomCard {
+					width: root.cardWidth
+					height: cardsView.height
+					background.visible: false
+					KeyNavigationHighlight.active: false
+
+					ManuCard {
+						width: root.cardWidth
+						height: cardsView.height
+					}
+				}
+				*/
 			}
 		}
 
