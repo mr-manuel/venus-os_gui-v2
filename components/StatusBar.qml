@@ -219,6 +219,19 @@ FocusScope {
 		text: ClockTime.currentTime
 	}
 
+	Label {
+		id: noteLabel
+
+		anchors {
+			right: clockLabel.left
+			rightMargin: Theme.geometry_statusBar_spacing
+			verticalCenter: parent.verticalCenter
+		}
+		visible: !breadcrumbs.visible
+		text: "dbus-serialbattery GUI"
+		color: Theme.color_font_secondary
+	}
+
 	Row {
 		id: connectivityRow
 
