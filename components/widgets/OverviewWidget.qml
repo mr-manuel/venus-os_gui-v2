@@ -14,6 +14,10 @@ T.Control {
 	required property int type
 	property int size: VenusOS.OverviewWidget_Size_Zero
 	property int preferredSize: VenusOS.OverviewWidget_PreferredSize_Any
+
+	property color borderColor: Theme.color_overviewPage_widget_border
+	property color backgroundColor: Theme.color_overviewPage_widget_background
+
 	property var connectors: []
 
 	property real compactY
@@ -89,8 +93,8 @@ T.Control {
 		implicitWidth: Theme.geometry_overviewPage_widget_leftWidgetWidth
 		implicitHeight: Theme.geometry_overviewPage_widget_compact_l_height
 		border.width: enabled ? Theme.geometry_overviewPage_widget_border_width : 0
-		border.color: Theme.color_overviewPage_widget_border
-		color: Theme.color_overviewPage_widget_background
+		border.color: borderColor
+		color: backgroundColor
 		radius: Theme.geometry_overviewPage_widget_radius
 
 		PressArea {
