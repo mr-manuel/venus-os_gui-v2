@@ -58,6 +58,89 @@ OverviewWidget {
 										+ quantityLabelFont.advanceWidth(unitText))
 	}
 
+
+
+	function selectedBatteryMonitorServiceUid() {
+		if (!systemActiveBatteryService.value || systemActiveBatteryService.value === "") {
+			return ""
+		}
+
+		const serviceUid = systemActiveBatteryService.value
+		if (typeof serviceUid !== "string" || serviceUid.indexOf("/") === -1) {
+			return ""
+		}
+
+		// Split the serviceUid into parts and return the serviceUid from the name and instance.
+		// Example: "com.victronenergy.battery/ActiveBatteryService/0
+		const parts = serviceUid.split("/")
+		//console.log("part 0:", batteryService.value, "part 1:", parts[1])
+
+		const name = BackendConnection.serviceUidFromName(batteryService.value, parts[1])
+		//console.log("name:", name)
+		return name
+	}
+
+	function getBatteryProperty(type) {
+		let borderColor, backgroundColor, foregroundColor, batteryMode
+
+		if (errorCode.valid && errorCode.value !== 0) {
+			borderColor = Theme.color_red
+			backgroundColor = Theme.color_darkRed
+			foregroundColor = Theme.color_red
+			batteryMode = "Error %1".arg(BmsError.description(errorCode.value))
+		} else if (allowToCharge.valid && allowToCharge.value === 0 && allowToDischarge.valid && allowToDischarge.value === 0) {
+			borderColor = Theme.color_red
+			backgroundColor = Theme.color_darkRed
+			foregroundColor = Theme.color_red
+			batteryMode = "Charging/Discharging not allowed"
+		} else if (allowToCharge.valid && allowToCharge.value === 0) {
+			borderColor = Theme.color_green
+			backgroundColor = Theme.color_red
+			foregroundColor = Theme.color_darkGreen
+			batteryMode = "Charging not allowed"
+		} else if (allowToDischarge.valid && allowToDischarge.value === 0) {
+			borderColor = Theme.color_overviewPage_widget_border
+			backgroundColor = Theme.color_overviewPage_widget_background
+			foregroundColor = Theme.color_red
+			batteryMode = "Discharging not allowed"
+		} else {
+			borderColor = batteryData.current > 0 ? Theme.color_green : Theme.color_overviewPage_widget_border
+			backgroundColor = batteryData.current > 0 ? Theme.color_darkGreen : Theme.color_overviewPage_widget_background
+			foregroundColor = batteryData.current > 0 ? Theme.color_green : Theme.color_overviewPage_widget_battery_background
+			batteryMode = VenusOS.battery_modeToText(batteryData.mode)
+		}
+
+		if (type === "border") return borderColor
+		if (type === "background") return backgroundColor
+		if (type === "foreground") return foregroundColor
+		if (type === "mode") return batteryMode
+
+		return null
+	}
+
+	VeQuickItem {
+		id: systemActiveBatteryService
+		uid: Global.system.serviceUid + "/ActiveBatteryService"
+	}
+	VeQuickItem {
+		id: batteryService
+		uid: Global.system.serviceUid + "/Dc/Battery/BatteryService"
+	}
+	VeQuickItem {
+		id: allowToCharge
+		uid: selectedBatteryMonitorServiceUid() !== "" ? selectedBatteryMonitorServiceUid() + "/Io/AllowToCharge" : ""
+	}
+	VeQuickItem {
+		id: allowToDischarge
+		uid: selectedBatteryMonitorServiceUid() !== "" ? selectedBatteryMonitorServiceUid() + "/Io/AllowToDischarge" : ""
+	}
+	VeQuickItem {
+		id: errorCode
+		uid: selectedBatteryMonitorServiceUid() !== "" ? selectedBatteryMonitorServiceUid() + "/ErrorCode" : ""
+	}
+
+
+
 	FontMetrics {
 		id: quantityLabelFont
 		font.pixelSize: Theme.font_size_body2
@@ -92,6 +175,9 @@ OverviewWidget {
 
 	color: "transparent"
 
+	borderColor: getBatteryProperty("border")
+	backgroundColor: Theme.color_overviewPage_widget_background
+
 	BarGauge {
 		id: animationRect
 		z: -1
@@ -103,8 +189,8 @@ OverviewWidget {
 
 		animationEnabled: root.animationEnabled // Note: don't use _animationReady here.
 		value: _normalizedStateOfCharge/100
-		backgroundColor: Theme.color_overviewPage_widget_background
-		foregroundColor: Theme.color_overviewPage_widget_battery_background
+		backgroundColor: getBatteryProperty("background")
+		foregroundColor: getBatteryProperty("foreground")
 		radius: Theme.geometry_overviewPage_widget_battery_background_radius
 
 		Item {
@@ -185,7 +271,7 @@ OverviewWidget {
 				rightMargin: Theme.geometry_overviewPage_widget_content_horizontalMargin
 			}
 			Label {
-				text: VenusOS.battery_modeToText(batteryData.mode)
+				text: getBatteryProperty("mode")
 				font.pixelSize: Theme.font_size_body1
 				width: parent.width
 				elide: Text.ElideRight
