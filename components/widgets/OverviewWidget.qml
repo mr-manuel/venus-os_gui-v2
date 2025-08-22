@@ -18,6 +18,9 @@ Rectangle {
 	property alias secondaryTitle: widgetHeader.secondaryText
 	property alias quantityLabel: quantityLabel
 
+	property color borderColor: Theme.color_overviewPage_widget_border
+	property color backgroundColor: Theme.color_overviewPage_widget_background
+
 	signal clicked
 
 	property int rightPadding
@@ -79,10 +82,10 @@ Rectangle {
 	height: compactHeight
 	visible: size !== VenusOS.OverviewWidget_Size_Zero
 	radius: Theme.geometry_overviewPage_widget_radius
-	color: Theme.color_overviewPage_widget_background
+	color: backgroundColor
 
 	border.width: enabled ? Theme.geometry_overviewPage_widget_border_width : 0
-	border.color: Theme.color_overviewPage_widget_border
+	border.color: borderColor
 	enabled: false
 
 	states: State {
