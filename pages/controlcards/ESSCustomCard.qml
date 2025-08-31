@@ -45,7 +45,7 @@ ControlCard {
 			dataItem.uid: Global.systemSettings.serviceUid + "/Settings/CGwacs/AcPowerSetPoint"
 			suffix: Units.defaultUnitString(VenusOS.Units_Watt)
 			stepSize: 10
-			presets: [ -500, -100, -10, 0, 10, 100, 500 ].map(function(v) { return { value: v } })
+			presets: [ -500, -250, -100, 0, 100, 250, 500 ].map(function(v) { return { value: v } })
 		}
 
 		FlatListItemSeparator { visible: gridSetpoint.visible }
