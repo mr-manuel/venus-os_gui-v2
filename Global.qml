@@ -107,13 +107,17 @@ QtObject {
 	readonly property IntValidator _intValidator: IntValidator {
 	}
 
-/*
+
 	readonly property VeQuickItem _guiPlugins: VeQuickItem {
 		// Only listen to the gui plugins MQTT path in WASM.
 		// GX and Desktop builds read gui plugins from filesystem instead.
 		// TODO: update the path to the correct MQTT-only path once it is decided.
-		uid: (Qt.platform.os === "wasm")
-			? pluginsService.serviceUid + "/Gui2/Plugins"
+		uid: (Qt.platform.os === "wasm"
+				&& systemSettings !== undefined
+				&& systemSettings !== null
+				&& systemSettings.serviceUid
+				&& systemSettings.serviceUid.length > 0)
+			? systemSettings.serviceUid + "/Settings/Gui2/Plugins"
 			: ""
 		property string json: valid && BackendConnection.state === BackendConnection.Ready ? value : "[]"
 		onJsonChanged: {
@@ -123,6 +127,5 @@ QtObject {
 			}
 		}
 	}
-*/
-}
 
+}

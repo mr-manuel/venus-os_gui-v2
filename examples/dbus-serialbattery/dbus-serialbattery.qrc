@@ -1,0 +1,11 @@
+<RCC>
+<qresource prefix="/dbus-serialbattery">
+<file>PageBatteryDbusSerialbattery.qml</file>
+<file>PageBatteryDbusSerialbatteryCellVoltages.qml</file>
+<file>PageBatteryDbusSerialbatterySettings.qml</file>
+<file>PageBatteryDbusSerialbatteryTimeToSoc.qml</file>
+<file>dbus-serialbattery_de.qm</file>
+<file>dbus-serialbattery_en.qm</file>
+<file>dbus-serialbattery_it.qm</file>
+</qresource>
+</RCC>
