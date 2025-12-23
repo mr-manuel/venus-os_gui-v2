@@ -8,23 +8,15 @@
         <translation>dbus-serialbattery - General</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_overview">
-        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="57" />
+        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="121" />
         <source>Overview</source>
         <translation>Overview</translation>
-    </message>
-    <message id="dbus_serialbattery_general_current">
-        <source>Current</source>
-        <translation type="vanished">Current</translation>
     </message>
     <message id="dbus_serialbattery_general_current_avg">
         <location filename="PageBatteryDbusSerialbattery.qml" line="374" />
         <source>Current avg</source>
         <extracomment>Label of the current average in amps</extracomment>
         <translation>Current avg</translation>
-    </message>
-    <message id="dbus_serialbattery_general_voltage">
-        <source>Voltage</source>
-        <translation type="vanished">Voltage</translation>
     </message>
     <message id="dbus_serialbattery_general_cell_max">
         <location filename="PageBatteryDbusSerialbattery.qml" line="418" />
@@ -45,10 +37,6 @@
         <location filename="PageBatteryDbusSerialbattery.qml" line="476" />
         <source>Temperatures</source>
         <translation>Temperatures</translation>
-    </message>
-    <message id="dbus_serialbattery_general_battery">
-        <source>Battery</source>
-        <translation type="vanished">Battery</translation>
     </message>
     <message id="dbus_serialbattery_general_mosfet">
         <location filename="PageBatteryDbusSerialbattery.qml" line="527" />
@@ -108,10 +96,6 @@
         <extracomment>Allow to ...</extracomment>
         <translation>Balance</translation>
     </message>
-    <message id="dbus_serialbattery_general_alarms">
-        <source>Alarms</source>
-        <translation type="vanished">Alarms</translation>
-    </message>
     <message id="dbus_serialbattery_general_support">
         <location filename="PageBatteryDbusSerialbattery.qml" line="779" />
         <source>Support</source>
@@ -163,34 +147,34 @@
         <translation>dbus-serialbattery - Cell Voltages</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_sum">
-        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="82" />
+        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="146" />
         <source>Sum</source>
         <translation>Sum</translation>
     </message>
+    <message id="dbus_serialbattery_cell_voltages_mean">
+        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="166" />
+        <source>Mean</source>
+        <translation>Mean</translation>
+    </message>
     <message id="dbus_serialbattery_cell_voltages_diff">
-        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="102" />
+        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="226" />
         <source>Diff</source>
         <translation>Diff</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_max">
-        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="122" />
+        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="206" />
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_min">
-        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="142" />
+        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="186" />
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_cells">
-        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="164" />
+        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="248" />
         <source>Cells %1-%2</source>
         <translation>Cells %1-%2</translation>
-    </message>
-    <message id="dbus_serialbattery_cell_voltages_cell">
-        <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="197" />
-        <source>Cell %1</source>
-        <translation>Cell %1</translation>
     </message>
     <message id="dbus_serialbattery_settings_title">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="13" />
