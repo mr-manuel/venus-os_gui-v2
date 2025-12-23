@@ -9,13 +9,17 @@ import Victron.VenusOS
 Page {
 	id: root
 
+	//% "dbus-serialbattery - Settings"
+	title: qsTrId("dbus_serialbattery_settings_title")
+
 	property string bindPrefix
 
 	GradientListView {
 		model: VisibleItemModel {
 
 			SettingsListHeader {
-				text: "IO"
+				//% "IO"
+				text: qsTrId("dbus_serialbattery_settings_io")
 			}
 
 			ListText {
@@ -33,39 +37,44 @@ Page {
 			}
 
 			ListText {
-				text: "Allow to balance"
+				//% "Allow to balance"
+				text: qsTrId("dbus_serialbattery_settings_allow_to_balance")
 				dataItem.uid: root.bindPrefix + "/Io/AllowToBalance"
 				preferredVisible: dataItem.valid
 				secondaryText: CommonWords.yesOrNo(dataItem.value)
 			}
 
 			ListSwitch {
-				text: "Force charging off"
+				//% "Force charging off"
+				text: qsTrId("dbus_serialbattery_settings_force_charging_off")
 				dataItem.uid: root.bindPrefix + "/Io/ForceChargingOff"
 				preferredVisible: dataItem.valid
 			}
 
 			ListSwitch {
-				text: "Force discharging off"
+				//% "Force discharging off"
+				text: qsTrId("dbus_serialbattery_settings_force_discharging_off")
 				dataItem.uid: root.bindPrefix + "/Io/ForceDischargingOff"
 				preferredVisible: dataItem.valid
 			}
 
 			ListSwitch {
-				text: "Turn balancing off"
+				//% "Turn balancing off"
+				text: qsTrId("dbus_serialbattery_settings_turn_balancing_off")
 				dataItem.uid: root.bindPrefix + "/Io/TurnBalancingOff"
 				preferredVisible: dataItem.valid
 			}
 
 			SettingsListHeader {
-				text: "Settings"
+				//% "Settings"
+				text: qsTrId("dbus_serialbattery_settings_settings")
 				preferredVisible: resetSocSpinBoxItem.visible
 			}
 
 			ListSpinBox {
 				id: resetSocSpinBoxItem
 				//% "Reset SoC to"
-				text: "Reset SoC to"
+				text: qsTrId("dbus_serialbattery_settings_reset_soc_to")
 				dataItem.uid: root.bindPrefix + "/Settings/ResetSoc"
 				preferredVisible: dataItem.valid
 				suffix: "%"

@@ -50,7 +50,8 @@ Page {
 
 			ListItem {
 				id: cellOverviewItem
-				text: "Overview"
+				//% "Overview"
+				text: qsTrId("dbus_serialbattery_cell_voltages_overview")
 				content.children: [
 					Row {
 						id: contentRowOverview
@@ -74,7 +75,8 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
-								text: "Sum"
+								//% "Sum"
+								text: qsTrId("dbus_serialbattery_cell_voltages_sum")
 								color: Theme.color_font_secondary
 								font.pixelSize: Theme.font_size_caption
 							}
@@ -84,7 +86,8 @@ Page {
 
 							QuantityLabel {
 								width: parent.width
-								value: cellDiff.value ?? NaN
+								//% "Mean"
+								text: "Ø " + qsTrId("dbus_serialbattery_cell_voltages_mean")
 								unit: VenusOS.Units_Volt_DC
 								precision: 3
 								font.pixelSize: 22
@@ -93,7 +96,8 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
-								text: "Diff"
+								//% "Min"
+								text: qsTrId("dbus_serialbattery_cell_voltages_min")
 								color: Theme.color_font_secondary
 								font.pixelSize: Theme.font_size_caption
 							}
@@ -112,7 +116,8 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
-								text: "Max"
+								//% "Max"
+								text: qsTrId("dbus_serialbattery_cell_voltages_max")
 								color: Theme.color_font_secondary
 								font.pixelSize: Theme.font_size_caption
 							}
@@ -131,7 +136,8 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
-								text: "Min"
+								//% "Diff"
+								text: qsTrId("dbus_serialbattery_cell_voltages_diff")
 								color: Theme.color_font_secondary
 								font.pixelSize: Theme.font_size_caption
 							}
@@ -152,7 +158,8 @@ Page {
 
 						property int outerIndex: model.index
 
-						text: "Cells %1-%2".arg(model.index * 4 + 1).arg(model.index * 4 + 4)
+						//% "Cells %1-%2"
+						text: qsTrId("dbus_serialbattery_cell_voltages_cells").arg(model.index * 4 + 1).arg(model.index * 4 + 4)
 						preferredVisible: firstColumnCellVoltage.valid ||
 							secondColumnCellVoltage.valid ||
 							thirdColumnCellVoltage.valid ||
