@@ -208,6 +208,10 @@ Page {
 		id: allowToBalanceItem
 		uid: root.bindPrefix + "/Io/AllowToBalance"
 	}
+	VeQuickItem {
+		id: allowToHeatItem
+		uid: root.bindPrefix + "/Io/AllowToHeat"
+	}
 
 	VeQuickItem {
 		id: chargeModeItem
@@ -697,7 +701,7 @@ Page {
 					Row {
 						id: allowToContentRowOverview
 
-						readonly property real itemWidth: (width - (spacing * 2)) / 3
+						readonly property real itemWidth: allowToHeatItem.valid ? (width - (spacing * 3)) / 4 : (width - (spacing * 2)) / 3
 
 						width: allowToOverviewItem.maximumContentWidth
 						spacing: Theme.geometry_listItem_content_spacing
@@ -760,6 +764,182 @@ Page {
 								text: qsTrId("dbus_serialbattery_general_balance")
 								color: Theme.color_font_secondary
 								font.pixelSize: Theme.font_size_caption
+							}
+						}
+						Column {
+							width: allowToHeatItem.valid ? allowToContentRowOverview.itemWidth : 0
+							visible: allowToHeatItem.valid
+
+							QuantityLabel {
+								width: parent.width
+								valueText: allowToHeatItem.valid ? CommonWords.yesOrNo(allowToHeatItem.value) : "--"
+								valueColor: allowToHeatItem.value === 0 ? "#BF4845" : Theme.color_font_primary
+								font.pixelSize: 22
+							}
+
+							Label {
+								width: parent.width
+								horizontalAlignment: Text.AlignHCenter
+								//: Allow to ...
+								//% "Heat"
+								text: qsTrId("dbus_serialbattery_general_heat")
+								color: Theme.color_font_secondary
+								font.pixelSize: Theme.font_size_caption
+							}
+						}
+					}
+				]
+			}
+
+			ListItem {
+				id: heaterOverviewItem
+				//% "Heater"
+				text: qsTrId("dbus_serialbattery_general_heater")
+				preferredVisible: heatingItem.valid || heatingCurrentItem.valid || heatingPowerItem.valid || heatingTemperatureStartItem.valid || heatingTemperatureStopItem.valid
+				content.children: [
+					Row {
+						id: heaterContentRowOverview
+
+						readonly property real itemWidth: (width - (spacing * 4)) / 5
+
+						width: heaterOverviewItem.maximumContentWidth
+						spacing: Theme.geometry_listItem_content_spacing
+
+						Column {
+							width: heaterContentRowOverview.itemWidth
+
+							Label {
+								width: parent.width
+								horizontalAlignment: Text.AlignHCenter
+								text: heatingItem.valid ? (
+									heatingItem.value === 1
+									//% "Running"
+									? qsTrId("dbus_serialbattery_general_heater_running")
+									//% "Stopped"
+									: qsTrId("dbus_serialbattery_general_heater_stopped")
+									) : "--"
+								color: Theme.color_font_primary
+								font.pixelSize: 22
+							}
+
+							Label {
+								width: parent.width
+								horizontalAlignment: Text.AlignHCenter
+								// "State"
+								text: CommonWords.state
+								color: Theme.color_font_secondary
+								font.pixelSize: Theme.font_size_caption
+							}
+
+							VeQuickItem {
+								id: heatingItem
+								uid: root.bindPrefix + "/Heating"
+							}
+						}
+						Column {
+							width: heaterContentRowOverview.itemWidth
+
+							QuantityLabel {
+								width: parent.width
+								value: heatingCurrentItem.value ?? NaN
+								unit: VenusOS.Units_Amp
+								precision: 1
+								//valueColor: Theme.color_font_primary
+								font.pixelSize: 22
+							}
+
+							Label {
+								width: parent.width
+								horizontalAlignment: Text.AlignHCenter
+								// "Current"
+								text: CommonWords.current_amps
+								color: Theme.color_font_secondary
+								font.pixelSize: Theme.font_size_caption
+							}
+
+							VeQuickItem {
+								id: heatingCurrentItem
+								uid: root.bindPrefix + "/Info/HeatingCurrent"
+							}
+						}
+						Column {
+							width: heaterContentRowOverview.itemWidth
+
+							QuantityLabel {
+								width: parent.width
+								value: heatingPowerItem.value ?? NaN
+								unit: VenusOS.Units_Watt
+								precision: 1
+								//valueColor: Theme.color_font_primary
+								font.pixelSize: 22
+							}
+
+							Label {
+								width: parent.width
+								horizontalAlignment: Text.AlignHCenter
+								// "Power"
+								text: CommonWords.power_watts
+								color: Theme.color_font_secondary
+								font.pixelSize: Theme.font_size_caption
+							}
+
+							VeQuickItem {
+								id: heatingPowerItem
+								uid: root.bindPrefix + "/Info/HeatingPower"
+							}
+						}
+						Column {
+							width: heaterContentRowOverview.itemWidth
+
+							QuantityLabel {
+								width: parent.width
+								value: heatingTemperatureStartItem.value ?? NaN
+								unit: Global.systemSettings.temperatureUnit
+								precision: 1
+								valueColor: Theme.color_font_primary
+								font.pixelSize: 22
+							}
+
+							Label {
+								width: parent.width
+								horizontalAlignment: Text.AlignHCenter
+								//: Temperature at which the heater starts
+								//% "Temp start"
+								text: qsTrId("dbus_serialbattery_general_temp_start")
+								color: Theme.color_font_secondary
+								font.pixelSize: Theme.font_size_caption
+							}
+
+							VeQuickItem {
+								id: heatingTemperatureStartItem
+								uid: root.bindPrefix + "/Info/HeatingTemperatureStart"
+							}
+						}
+						Column {
+							width: heaterContentRowOverview.itemWidth
+
+							QuantityLabel {
+								width: parent.width
+								value: heatingTemperatureStopItem.value ?? NaN
+								unit: Global.systemSettings.temperatureUnit
+								precision: 1
+								valueColor: Theme.color_font_primary
+								font.pixelSize: 22
+							}
+
+							Label {
+								width: parent.width
+								horizontalAlignment: Text.AlignHCenter
+								//: Temperature at which the heater stops
+								//% "Temp stop"
+								text: qsTrId("dbus_serialbattery_general_temp_stop")
+								color: Theme.color_font_secondary
+								font.pixelSize: Theme.font_size_caption
+							}
+
+							VeQuickItem {
+								id: heatingTemperatureStopItem
+								uid: root.bindPrefix + "/Info/HeatingTemperatureStop"
 							}
 						}
 					}
