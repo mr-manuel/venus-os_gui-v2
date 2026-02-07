@@ -142,6 +142,7 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
+								//: Sum of all cell voltages
 								//% "Sum"
 								text: qsTrId("dbus_serialbattery_cell_voltages_sum")
 								color: Theme.color_font_secondary
@@ -162,6 +163,7 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
+								//: Average of all cell voltages
 								//% "Mean"
 								text: "Ø " + qsTrId("dbus_serialbattery_cell_voltages_mean")
 								color: Theme.color_font_secondary
@@ -182,6 +184,7 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
+								//: Minimum cell voltage
 								//% "Min"
 								text: qsTrId("dbus_serialbattery_cell_voltages_min")
 								color: Theme.color_font_secondary
@@ -202,6 +205,7 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
+								//: Maximum cell voltage
 								//% "Max"
 								text: qsTrId("dbus_serialbattery_cell_voltages_max")
 								color: Theme.color_font_secondary
@@ -222,6 +226,7 @@ Page {
 							Label {
 								width: parent.width
 								horizontalAlignment: Text.AlignHCenter
+								//: Difference between maximum and minimum cell voltage
 								//% "Diff"
 								text: qsTrId("dbus_serialbattery_cell_voltages_diff")
 								color: Theme.color_font_secondary
