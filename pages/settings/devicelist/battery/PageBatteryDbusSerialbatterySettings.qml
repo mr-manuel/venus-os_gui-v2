@@ -144,7 +144,10 @@ Page {
 						//% "Reset SoC to"
 						title: qsTrId("dbus_serialbattery_settings_reset_soc_to")
 
-						onAccepted: resetSocToItem.setValue(resetSocTo)
+						onAccepted: {
+							resetSocToItem.setValue(resetSocTo)
+							resetSocToApplyItem.setValue(1)
+						}
 
 						contentItem: ModalDialog.FocusableContentItem {
 							Column {
@@ -188,6 +191,11 @@ Page {
 				VeQuickItem {
 					id: resetSocToItem
 					uid: root.bindPrefix + "/Settings/ResetSocTo"
+				}
+
+				VeQuickItem {
+					id: resetSocToApplyItem
+					uid: root.bindPrefix + "/Settings/ResetSocToApply"
 				}
 			}
 		}
