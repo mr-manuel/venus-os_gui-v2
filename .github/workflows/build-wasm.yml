@@ -30,7 +30,7 @@ jobs:
       run: |
        sudo apt-get update -yq &&
        sudo apt-get install -y  g++ build-essential mesa-common-dev libssl-dev \
-                                wget lsb libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev p7zip-full \
+                                wget libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev p7zip-full \
                                 ninja-build dos2unix libegl1
        sudo snap install yq
     - name: Install libraries needed for building the wasm
@@ -114,7 +114,13 @@ jobs:
         sed -i "s%^var \(createQtAppInstance\)%window.\1%" artifacts/wasm/venus-gui-v2.js
         cp .github/patches/Makefile artifacts/wasm/
         cp LICENSE.txt artifacts/wasm/
-        cd artifacts
+
+        cd artifacts/wasm
+        gzip -k -9 venus-gui-v2.wasm
+        sha256sum venus-gui-v2.wasm > venus-gui-v2.wasm.sha256
+        rm venus-gui-v2.wasm
+        cd ..
+
         zip -r ../venus-webassembly.zip wasm
     - name: Upload wasm files
       uses: actions/upload-artifact@v4
