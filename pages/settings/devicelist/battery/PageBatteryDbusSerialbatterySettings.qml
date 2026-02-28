@@ -144,7 +144,10 @@ Page {
 						//% "Reset SoC to"
 						title: qsTrId("dbus_serialbattery_settings_reset_soc_to")
 
-						onAccepted: resetSocToItem.setValue(resetSocTo)
+						onAccepted: {
+							resetSocToItem.setValue(resetSocTo)
+							resetSocToApplyItem.setValue(1)
+						}
 
 						contentItem: ModalDialog.FocusableContentItem {
 							Column {
@@ -173,11 +176,16 @@ Page {
 									focus: true
 									onMoved: resetSocTo = value
 
-									KeyNavigationHighlight.active: resetToSocSlider.activeFocus
-									KeyNavigationHighlight.leftMargin: -Theme.geometry_listItem_flat_content_horizontalMargin
-									KeyNavigationHighlight.rightMargin: -Theme.geometry_listItem_flat_content_horizontalMargin
-									KeyNavigationHighlight.topMargin: -Theme.geometry_listItem_content_verticalMargin
-									KeyNavigationHighlight.bottomMargin: -Theme.geometry_listItem_content_verticalMargin
+									KeyNavigationHighlight {
+										anchors {
+											fill: parent
+											leftMargin: -Theme.geometry_listItem_flat_content_horizontalMargin
+											rightMargin: -Theme.geometry_listItem_flat_content_horizontalMargin
+											topMargin: -Theme.geometry_listItem_content_verticalMargin
+											bottomMargin: -Theme.geometry_listItem_content_verticalMargin
+										}
+										active: parent.activeFocus
+									}
 								}
 							}
 						}
@@ -188,6 +196,11 @@ Page {
 				VeQuickItem {
 					id: resetSocToItem
 					uid: root.bindPrefix + "/Settings/ResetSocTo"
+				}
+
+				VeQuickItem {
+					id: resetSocToApplyItem
+					uid: root.bindPrefix + "/Settings/ResetSocToApply"
 				}
 			}
 		}
