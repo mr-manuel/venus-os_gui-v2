@@ -641,7 +641,7 @@ DeviceListPluginPage {
 				QtObject {
 					id: customDataObject
 					//% "V/cell"
-					property string name: maxChargeCellVoltageItem.valid ? maxChargeCellVoltageItem.value.toFixed(3) + qsTrId("serialbattery_general_volt_per_cell") : "--"
+					property string name: maxChargeCellVoltageItem.valid ? maxChargeCellVoltageItem.value.toFixed(3) + qsTrId("dbus_serialbattery_general_volt_per_cell") : "--"
 				}
 			}
 

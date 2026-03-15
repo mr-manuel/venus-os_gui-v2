@@ -68,7 +68,7 @@
         <source>Charge Mode</source>
         <translation>Charge Mode</translation>
     </message>
-    <message id="serialbattery_general_volt_per_cell">
+    <message id="dbus_serialbattery_general_volt_per_cell">
         <location filename="PageBatteryDbusSerialbattery.qml" line="644" />
         <source>V/cell</source>
         <translation>V/cell</translation>
