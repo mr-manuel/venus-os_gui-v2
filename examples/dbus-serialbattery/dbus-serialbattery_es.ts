@@ -1,43 +1,43 @@
 <?xml version='1.0' encoding='utf-8'?>
-<TS version="2.1" language="it">
+<TS version="2.1" language="es">
 <context>
     <name />
     <message id="dbus_serialbattery_general_title">
         <location filename="PageBatteryDbusSerialbattery.qml" line="14" />
         <source>dbus-serialbattery - General</source>
-        <translation>dbus-serialbattery - Generale</translation>
+        <translation>dbus-serialbattery - General</translation>
     </message>
     <message id="dbus_serialbattery_overview">
         <location filename="PageBatteryDbusSerialbattery.qml" line="365" />
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="160" />
         <source>Overview</source>
-        <translation>Panoramica</translation>
+        <translation>Visión general</translation>
     </message>
     <message id="dbus_serialbattery_general_current_avg">
         <location filename="PageBatteryDbusSerialbattery.qml" line="413" />
         <source>Current avg</source>
         <extracomment>Label of the current average in amps</extracomment>
-        <translation>Corrente media</translation>
+        <translation>Corriente media</translation>
     </message>
     <message id="dbus_serialbattery_general_cell_max">
         <location filename="PageBatteryDbusSerialbattery.qml" line="459" />
         <source>Cell max</source>
-        <translation>Cella max</translation>
+        <translation>Celda máx</translation>
     </message>
     <message id="dbus_serialbattery_general_cell_min">
         <location filename="PageBatteryDbusSerialbattery.qml" line="483" />
         <source>Cell min</source>
-        <translation>Cella min</translation>
+        <translation>Celda mín</translation>
     </message>
     <message id="dbus_serialbattery_general_soc">
         <location filename="PageBatteryDbusSerialbattery.qml" line="507" />
         <source>SoC</source>
-        <translation>SdC</translation>
+        <translation>SoC</translation>
     </message>
     <message id="dbus_serialbattery_general_temperatures">
         <location filename="PageBatteryDbusSerialbattery.qml" line="526" />
         <source>Temperatures</source>
-        <translation>Temperature</translation>
+        <translation>Temperaturas</translation>
     </message>
     <message id="dbus_serialbattery_general_mosfet">
         <location filename="PageBatteryDbusSerialbattery.qml" line="578" />
@@ -67,83 +67,83 @@
     <message id="dbus_serialbattery_general_charge_mode">
         <location filename="PageBatteryDbusSerialbattery.qml" line="677" />
         <source>Charge Mode</source>
-        <translation>Modalitá di carica</translation>
+        <translation>Modo de carga</translation>
     </message>
     <message id="dbus_serialbattery_general_volt_per_cell">
         <location filename="PageBatteryDbusSerialbattery.qml" line="695" />
         <source>V/cell</source>
-        <translation>V/cella</translation>
+        <translation>V/celda</translation>
     </message>
     <message id="dbus_serialbattery_general_allow_to">
         <location filename="PageBatteryDbusSerialbattery.qml" line="757" />
         <source>Allow to</source>
-        <translation>Autorizza</translation>
+        <translation>Permitir</translation>
     </message>
     <message id="dbus_serialbattery_general_charge">
         <location filename="PageBatteryDbusSerialbattery.qml" line="783" />
         <source>Charge</source>
         <extracomment>Allow to ...</extracomment>
-        <translation>Carica</translation>
+        <translation>Cargar</translation>
     </message>
     <message id="dbus_serialbattery_general_discharge">
         <location filename="PageBatteryDbusSerialbattery.qml" line="804" />
         <source>Discharge</source>
         <extracomment>Allow to ...</extracomment>
-        <translation>Scarica</translation>
+        <translation>Descargar</translation>
     </message>
     <message id="dbus_serialbattery_general_balance">
         <location filename="PageBatteryDbusSerialbattery.qml" line="825" />
         <source>Balance</source>
         <extracomment>Allow to ...</extracomment>
-        <translation>Bilanciamento</translation>
+        <translation>Equilibrar</translation>
     </message>
     <message id="dbus_serialbattery_general_heat">
         <location filename="PageBatteryDbusSerialbattery.qml" line="846" />
         <source>Heat</source>
         <extracomment>Allow to ...</extracomment>
-        <translation>Riscaldamento</translation>
+        <translation>Calentar</translation>
     </message>
     <message id="dbus_serialbattery_general_heater">
         <location filename="PageBatteryDbusSerialbattery.qml" line="862" />
         <source>Heater</source>
-        <translation>Riscaldatore</translation>
+        <translation>Calentador</translation>
     </message>
     <message id="dbus_serialbattery_general_heater_running">
         <location filename="PageBatteryDbusSerialbattery.qml" line="881" />
         <source>Running</source>
-        <translation>In funzione</translation>
+        <translation>En marcha</translation>
     </message>
     <message id="dbus_serialbattery_general_heater_stopped">
         <location filename="PageBatteryDbusSerialbattery.qml" line="883" />
         <source>Stopped</source>
-        <translation>Fermo</translation>
+        <translation>Detenido</translation>
     </message>
     <message id="dbus_serialbattery_general_temp_start">
         <location filename="PageBatteryDbusSerialbattery.qml" line="972" />
         <source>Temp start</source>
         <extracomment>Temperature at which the heater starts</extracomment>
-        <translation>Temp avvio</translation>
+        <translation>Temp inicio</translation>
     </message>
     <message id="dbus_serialbattery_general_temp_stop">
         <location filename="PageBatteryDbusSerialbattery.qml" line="999" />
         <source>Temp stop</source>
         <extracomment>Temperature at which the heater stops</extracomment>
-        <translation>Temp arresto</translation>
+        <translation>Temp parada</translation>
     </message>
     <message id="dbus_serialbattery_general_support">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1023" />
         <source>Support</source>
-        <translation>Supporto</translation>
+        <translation>Soporte</translation>
     </message>
     <message id="dbus_serialbattery_general_how_to_troubleshoot">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1030" />
         <source>How to troubleshoot</source>
-        <translation>Come risolvere i problemi</translation>
+        <translation>Cómo solucionar problemas</translation>
     </message>
     <message id="dbus_serialbattery_general_faq">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1038" />
         <source>FAQ (Frequently Asked Questions)</source>
-        <translation>FAQ (domande frequenti)</translation>
+        <translation>FAQ (Preguntas frecuentes)</translation>
     </message>
     <message id="dbus_serialbattery_general_github">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1046" />
@@ -153,38 +153,38 @@
     <message id="dbus_serialbattery_general_donate">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1054" />
         <source>Donate to help this project, any amount is appreciated</source>
-        <translation>Dona per sostenere questo progetto, qualsiasi importo è gradito</translation>
+        <translation>Dona para apoyar este proyecto, cualquier cantidad es apreciada</translation>
     </message>
     <message id="dbus_serialbattery_general_driver_debug_data">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1062" />
         <source>Driver Debug Data</source>
-        <translation>Dati di debug del driver</translation>
+        <translation>Datos de depuración del controlador</translation>
     </message>
     <message id="dbus_serialbattery_general_values">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1081" />
         <source>General Values</source>
-        <translation>Valori generali</translation>
+        <translation>Valores generales</translation>
     </message>
     <message id="dbus_serialbattery_general_switch_to_float_requirements">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1108" />
         <source>Switch to Float Requirements</source>
-        <translation>Requisiti per passare al mantenimento</translation>
+        <translation>Requisitos para cambiar a Float</translation>
     </message>
     <message id="dbus_serialbattery_general_switch_to_bulk_requirements">
         <location filename="PageBatteryDbusSerialbattery.qml" line="1135" />
         <source>Switch to Bulk Requirements</source>
-        <translation>Requisiti per passare a bulk</translation>
+        <translation>Requisitos para cambiar a Bulk</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_title">
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="14" />
         <source>dbus-serialbattery - Cell Voltages</source>
-        <translation>dbus-serialbattery - Tensione celle</translation>
+        <translation>dbus-serialbattery - Voltajes de celdas</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_sum">
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="187" />
         <source>Sum</source>
         <extracomment>Sum of all cell voltages</extracomment>
-        <translation>Somma</translation>
+        <translation>Suma</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_mean">
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="209" />
@@ -196,30 +196,30 @@
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="275" />
         <source>Diff</source>
         <extracomment>Difference between maximum and minimum cell voltage</extracomment>
-        <translation>Diff</translation>
+        <translation>Diferencia</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_max">
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="253" />
         <source>Max</source>
         <extracomment>Maximum cell voltage</extracomment>
-        <translation>Max</translation>
+        <translation>Máx</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_min">
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="231" />
         <source>Min</source>
         <extracomment>Minimum cell voltage</extracomment>
-        <translation>Min</translation>
+        <translation>Mín</translation>
     </message>
     <message id="dbus_serialbattery_cell_voltages_cells">
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="24" />
         <location filename="PageBatteryDbusSerialbatteryCellVoltages.qml" line="314" />
         <source>Cells %1-%2</source>
-        <translation>Celle %1-%2</translation>
+        <translation>Celdas %1-%2</translation>
     </message>
     <message id="dbus_serialbattery_settings_title">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="13" />
         <source>dbus-serialbattery - Settings</source>
-        <translation>dbus-serialbattery - Impostazioni</translation>
+        <translation>dbus-serialbattery - Configuración</translation>
     </message>
     <message id="dbus_serialbattery_settings_io">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="27" />
@@ -229,53 +229,53 @@
     <message id="dbus_serialbattery_settings_allow_to_balance">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="46" />
         <source>Allow to balance</source>
-        <translation>Autorizza bilanciamento</translation>
+        <translation>Permitir equilibrado</translation>
     </message>
     <message id="dbus_serialbattery_settings_allow_to_heat">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="54" />
         <source>Allow to heat</source>
-        <translation>Autorizza riscaldamento</translation>
+        <translation>Permitir calefacción</translation>
     </message>
     <message id="dbus_serialbattery_settings_force_charging_off">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="68" />
         <source>Force charging off</source>
-        <translation>Forza la disattivazione della ricarica</translation>
+        <translation>Forzar desactivación de carga</translation>
     </message>
     <message id="dbus_serialbattery_settings_force_discharging_off">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="75" />
         <source>Force discharging off</source>
-        <translation>Forza la disattivazione della discarica</translation>
+        <translation>Forzar desactivación de descarga</translation>
     </message>
     <message id="dbus_serialbattery_settings_turn_balancing_off">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="82" />
         <source>Turn balancing off</source>
-        <translation>Disattiva il bilanciamento</translation>
+        <translation>Desactivar equilibrado</translation>
     </message>
     <message id="dbus_serialbattery_settings_settings">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="62" />
         <source>Settings</source>
-        <translation>Impostazioni</translation>
+        <translation>Configuración</translation>
     </message>
     <message id="dbus_serialbattery_settings_turn_heating_off">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="89" />
         <source>Turn heating off</source>
-        <translation>Disattiva il riscaldamento</translation>
+        <translation>Desactivar calefacción</translation>
     </message>
     <message id="dbus_serialbattery_settings_reset_soc_to">
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="96" />
         <location filename="PageBatteryDbusSerialbatterySettings.qml" line="109" />
         <source>Reset SoC to</source>
-        <translation>Ripristina lo SdC a</translation>
+        <translation>Restablecer SoC a</translation>
     </message>
     <message id="dbus_serialbattery_time_to_soc_title">
         <location filename="PageBatteryDbusSerialbatteryTimeToSoc.qml" line="13" />
         <source>dbus-serialbattery - Time to SoC</source>
-        <translation>dbus-serialbattery - Tempo al SdC</translation>
+        <translation>dbus-serialbattery - Tiempo hasta SoC</translation>
     </message>
     <message id="dbus_serialbattery_time_to_soc_not_available">
         <location filename="PageBatteryDbusSerialbatteryTimeToSoc.qml" line="48" />
         <source>No Time-to-Soc was enabled in the config file.</source>
-        <translation>Nel file di configurazione non è stato abilitato il Tempo-al-SdC.</translation>
+        <translation>No se habilitó ningún Tiempo-hasta-SoC en el archivo de configuración.</translation>
     </message>
     <message id="dbus_serialbattery_time_to_soc">
         <location filename="PageBatteryDbusSerialbatteryTimeToSoc.qml" line="59" />
@@ -300,7 +300,7 @@
         <location filename="PageBatteryDbusSerialbatteryTimeToSoc.qml" line="192" />
         <location filename="PageBatteryDbusSerialbatteryTimeToSoc.qml" line="199" />
         <source>Time-to-SoC %1%</source>
-        <translation>Tempo-al-SdC %1%</translation>
+        <translation>Tiempo-hasta-SoC %1%</translation>
     </message>
 </context>
 </TS>

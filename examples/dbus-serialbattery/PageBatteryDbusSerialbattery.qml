@@ -4,6 +4,7 @@
 */
 
 import QtQuick
+import QtQuick.Layouts
 import Victron.VenusOS
 
 DeviceListPluginPage {
@@ -13,6 +14,30 @@ DeviceListPluginPage {
 	title: qsTrId("dbus_serialbattery_general_title")
 
 	readonly property string bindPrefix: root.device.serviceUid
+
+	readonly property real overviewLabelWidth: Math.max(
+		overviewTitleLabel.implicitWidth,
+		temperaturesTitleLabel.implicitWidth,
+		allowToTitleLabel.implicitWidth
+	)
+
+	readonly property int overviewColumnCount: {
+		if (contentRowOverview.width <= 0) return 6
+		const colWidth6 = (contentRowOverview.width - Theme.geometry_listItem_content_spacing * 5) / 6
+		return colWidth6 >= 80 ? 6 : 3
+	}
+	readonly property real overviewColumnWidth: contentRowOverview.width > 0
+		? (contentRowOverview.width - Theme.geometry_listItem_content_spacing * (overviewColumnCount - 1)) / overviewColumnCount
+		: 0
+
+	readonly property int allowToColumnCount: {
+		if (contentRowOverview.width <= 0) return 4
+		const colWidth4 = (contentRowOverview.width - Theme.geometry_listItem_content_spacing * 3) / 4
+		return colWidth4 >= 80 ? 4 : 2
+	}
+	readonly property real allowToColumnWidth: contentRowOverview.width > 0
+		? (contentRowOverview.width - Theme.geometry_listItem_content_spacing * (allowToColumnCount - 1)) / allowToColumnCount
+		: 0
 
 	function getActiveAlarmsText(){
 		let result = []
@@ -326,32 +351,41 @@ DeviceListPluginPage {
 
 	GradientListView {
 		model: VisibleItemModel {
+
 			ListItem {
 				id: cellOverviewItem
-				// "Overview"
-				text: qsTrId("nav_overview")
-				content.children: [
-					Row {
+				topPadding: Theme.geometry_listItem_content_verticalMargin / 2
+				bottomPadding: Theme.geometry_listItem_content_verticalMargin / 2
+
+				contentItem: GridLayout {
+					columns: Theme.screenSize === Theme.Portrait ? 1 : 2
+					Label {
+						id: overviewTitleLabel
+						//% "Overview"
+						text: qsTrId("dbus_serialbattery_overview")
+						font: cellOverviewItem.font
+						Layout.minimumWidth: root.overviewLabelWidth
+					}
+
+					Flow {
 						id: contentRowOverview
-
-						readonly property real itemWidth: (width - (spacing * 5)) / 6
-
-						width: cellOverviewItem.maximumContentWidth
+						Layout.fillWidth: true
 						spacing: Theme.geometry_listItem_content_spacing
 
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: currentItem.value ?? NaN
 								unit: VenusOS.Units_Amp
-								precision: 2
+								decimals: 2
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								// "Current"
 								text: CommonWords.current_amps
@@ -359,19 +393,20 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: currentAvgItem.value ?? NaN
 								unit: VenusOS.Units_Amp
-								precision: 2
+								decimals: 2
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Label of the current average in amps
 								//% "Current avg"
@@ -380,19 +415,20 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellSumItem.value ?? voltageItem.value ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 2
+								decimals: 2
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								// "Voltage"
 								text: CommonWords.voltage
@@ -400,14 +436,15 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellMaxItem.value ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 3
+								decimals: 3
 								valueColor: (chargeLimitationItem.valid && chargeLimitationItem.value.indexOf("Cell Voltage") !== -1)
 									|| (dischargeLimitationItem.valid && dischargeLimitationItem.value.indexOf("Cell Voltage") !== -1)
 									|| (maxChargeCellVoltageItem.valid && cellMaxItem.value > maxChargeCellVoltageItem.value)
@@ -416,7 +453,7 @@ DeviceListPluginPage {
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "Cell max"
 								text: qsTrId("dbus_serialbattery_general_cell_max")
@@ -424,14 +461,15 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellMinItem.value ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 3
+								decimals: 3
 								valueColor: (chargeLimitationItem.valid && chargeLimitationItem.value.indexOf("Cell Voltage") !== -1)
 									|| (dischargeLimitationItem.valid && dischargeLimitationItem.value.indexOf("Cell Voltage") !== -1)
 									? "#BF4845" : Theme.color_font_primary
@@ -439,7 +477,7 @@ DeviceListPluginPage {
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "Cell min"
 								text: qsTrId("dbus_serialbattery_general_cell_min")
@@ -447,14 +485,15 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: socItem.value ?? NaN
 								unit: VenusOS.Units_Percentage
-								precision: 3
+								decimals: 3
 								valueColor: (chargeLimitationItem.valid && chargeLimitationItem.value.indexOf("SoC") !== -1)
 									|| (dischargeLimitationItem.valid && dischargeLimitationItem.value.indexOf("SoC") !== -1)
 									? "#BF4845" : Theme.color_font_primary
@@ -462,7 +501,7 @@ DeviceListPluginPage {
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "SoC"
 								text: qsTrId("dbus_serialbattery_general_soc")
@@ -471,30 +510,37 @@ DeviceListPluginPage {
 							}
 						}
 					}
-				]
+				}
 			}
 
 			ListItem {
 				id: temperaturesOverviewItem
-				//% "Temperatures"
-				text: qsTrId("dbus_serialbattery_general_temperatures")
-				content.children: [
-					Row {
+				topPadding: Theme.geometry_listItem_content_verticalMargin / 2
+				bottomPadding: Theme.geometry_listItem_content_verticalMargin / 2
+
+				contentItem: GridLayout {
+					columns: Theme.screenSize === Theme.Portrait ? 1 : 2
+					Label {
+						id: temperaturesTitleLabel
+						//% "Temperatures"
+						text: qsTrId("dbus_serialbattery_general_temperatures")
+						font: temperaturesOverviewItem.font
+						Layout.minimumWidth: root.overviewLabelWidth
+					}
+					Flow {
 						id: temperaturesContentRowOverview
-
-						readonly property real itemWidth: (width - (spacing * 5)) / 6
-
-						width: temperaturesOverviewItem.maximumContentWidth
+						Layout.fillWidth: true
 						spacing: Theme.geometry_listItem_content_spacing
 
-						Column {
-							width: temperaturesContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: temperatureItem.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: (chargeLimitationItem.valid && chargeLimitationItem.value.indexOf("Temp") !== -1)
 									|| (dischargeLimitationItem.valid && dischargeLimitationItem.value.indexOf("Temp") !== -1)
 									? "#BF4845" : Theme.color_font_primary
@@ -502,7 +548,7 @@ DeviceListPluginPage {
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								// "Battery"
 								text: CommonWords.battery
@@ -510,14 +556,15 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: temperaturesContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: temperatureMosItem.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: (chargeLimitationItem.valid && chargeLimitationItem.value.indexOf("MOSFET") !== -1)
 									|| (dischargeLimitationItem.valid && dischargeLimitationItem.value.indexOf("MOSFET") !== -1)
 									? "#BF4845" : Theme.color_font_primary
@@ -525,7 +572,7 @@ DeviceListPluginPage {
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "MOSFET"
 								text: qsTrId("dbus_serialbattery_general_mosfet")
@@ -533,20 +580,21 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: temperaturesContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: temperature1Item.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "Temp 1"
 								text: temperature1NameItem.value ?? qsTrId("dbus_serialbattery_general_temp1")
@@ -554,20 +602,21 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: temperaturesContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: temperature2Item.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "Temp 2"
 								text: temperature2NameItem.value ?? qsTrId("dbus_serialbattery_general_temp2")
@@ -575,20 +624,21 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: temperaturesContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: temperature3Item.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "Temp 3"
 								text: temperature3NameItem.value ?? qsTrId("dbus_serialbattery_general_temp3")
@@ -596,20 +646,21 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: temperaturesContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: temperature4Item.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//% "Temp 4"
 								text: temperature4NameItem.value ?? qsTrId("dbus_serialbattery_general_temp4")
@@ -618,7 +669,7 @@ DeviceListPluginPage {
 							}
 						}
 					}
-				]
+				}
 			}
 
 			ListText {
@@ -694,30 +745,38 @@ DeviceListPluginPage {
 
 			ListItem {
 				id: allowToOverviewItem
-				//% "Allow to"
-				text: qsTrId("dbus_serialbattery_general_allow_to")
 				preferredVisible: allowToChargeItem.valid || allowToDischargeItem.valid || allowToBalanceItem.valid
-				content.children: [
-					Row {
+				topPadding: Theme.geometry_listItem_content_verticalMargin / 2
+				bottomPadding: Theme.geometry_listItem_content_verticalMargin / 2
+
+				contentItem: GridLayout {
+					columns: Theme.screenSize === Theme.Portrait ? 1 : 2
+					Label {
+						id: allowToTitleLabel
+						//% "Allow to"
+						text: qsTrId("dbus_serialbattery_general_allow_to")
+						font: allowToOverviewItem.font
+						Layout.minimumWidth: root.overviewLabelWidth
+					}
+
+					Flow {
 						id: allowToContentRowOverview
-
-						readonly property real itemWidth: allowToHeatItem.valid ? (width - (spacing * 3)) / 4 : (width - (spacing * 2)) / 3
-
-						width: allowToOverviewItem.maximumContentWidth
+						Layout.fillWidth: true
 						spacing: Theme.geometry_listItem_content_spacing
 
-						Column {
-							width: allowToContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.allowToColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								valueText: allowToChargeItem.valid ? CommonWords.yesOrNo(allowToChargeItem.value) : "--"
 								valueColor: allowToChargeItem.value === 0 ? "#BF4845" : Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Allow to ...
 								//% "Charge"
@@ -726,18 +785,19 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: allowToContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.allowToColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								valueText: allowToDischargeItem.valid ? CommonWords.yesOrNo(allowToDischargeItem.value) : "--"
 								valueColor: allowToDischargeItem.value === 0 ? "#BF4845" : Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Allow to ...
 								//% "Discharge"
@@ -746,18 +806,19 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: allowToContentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.allowToColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								valueText: allowToBalanceItem.valid ? CommonWords.yesOrNo(allowToBalanceItem.value) : "--"
 								valueColor: allowToBalanceItem.value === 0 ? "#BF4845" : Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Allow to ...
 								//% "Balance"
@@ -766,19 +827,19 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: allowToHeatItem.valid ? allowToContentRowOverview.itemWidth : 0
-							visible: allowToHeatItem.valid
+						ColumnLayout {
+							width: root.allowToColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								valueText: allowToHeatItem.valid ? CommonWords.yesOrNo(allowToHeatItem.value) : "--"
 								valueColor: allowToHeatItem.value === 0 ? "#BF4845" : Theme.color_font_primary
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Allow to ...
 								//% "Heat"
@@ -788,21 +849,24 @@ DeviceListPluginPage {
 							}
 						}
 					}
-				]
+				}
 			}
 
 			ListItem {
 				id: heaterOverviewItem
-				//% "Heater"
-				text: qsTrId("dbus_serialbattery_general_heater")
 				preferredVisible: heatingItem.valid || heatingCurrentItem.valid || heatingPowerItem.valid || heatingTemperatureStartItem.valid || heatingTemperatureStopItem.valid
-				content.children: [
-					Row {
+				contentItem: GridLayout {
+					columns: Theme.screenSize === Theme.Portrait ? 1 : 2
+					Label {
+						//% "Heater"
+						text: qsTrId("dbus_serialbattery_general_heater")
+						font: heaterOverviewItem.font
+					}
+					RowLayout {
 						id: heaterContentRowOverview
 
 						readonly property real itemWidth: (width - (spacing * 4)) / 5
 
-						width: heaterOverviewItem.maximumContentWidth
 						spacing: Theme.geometry_listItem_content_spacing
 
 						Column {
@@ -843,7 +907,7 @@ DeviceListPluginPage {
 								width: parent.width
 								value: heatingCurrentItem.value ?? NaN
 								unit: VenusOS.Units_Amp
-								precision: 1
+								decimals: 1
 								//valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
@@ -869,7 +933,7 @@ DeviceListPluginPage {
 								width: parent.width
 								value: heatingPowerItem.value ?? NaN
 								unit: VenusOS.Units_Watt
-								precision: 1
+								decimals: 1
 								//valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
@@ -895,7 +959,7 @@ DeviceListPluginPage {
 								width: parent.width
 								value: heatingTemperatureStartItem.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
@@ -922,7 +986,7 @@ DeviceListPluginPage {
 								width: parent.width
 								value: heatingTemperatureStopItem.value ?? NaN
 								unit: Global.systemSettings.temperatureUnit
-								precision: 1
+								decimals: 1
 								valueColor: Theme.color_font_primary
 								font.pixelSize: 22
 							}
@@ -943,15 +1007,15 @@ DeviceListPluginPage {
 							}
 						}
 					}
-				]
+				}
 			}
 
 			ListText {
 				// "Alarms"
 				text: CommonWords.alarms
 				secondaryText: getActiveAlarmsText()
-				secondaryLabel.color: Theme.color_red
-				preferredVisible: secondaryLabel.text !== ""
+				secondaryTextColor: Theme.color_red
+				preferredVisible: secondaryText !== ""
 			}
 
 			SettingsListHeader {
@@ -999,21 +1063,26 @@ DeviceListPluginPage {
 				preferredVisible: chargeModeDebug.valid && chargeModeDebug.value !== ""
 			}
 
-			ListItem {
-				//% "General Values"
-				text: qsTrId("dbus_serialbattery_general_values")
-
-				bottomContentChildren: [
-					PrimaryListLabel {
-						topPadding: 0
-						bottomPadding: 0
-						color: Theme.color_font_secondary
-						text: chargeModeDebug.valid ? chargeModeDebug.value : "--"
-						horizontalAlignment: Text.AlignHCenter
-					}
-				]
-
+			ListSetting {
 				preferredVisible: chargeModeDebug.valid && chargeModeDebug.value !== ""
+				contentItem: Item {
+					implicitWidth: Theme.geometry_listItem_width
+					implicitHeight: generalLabelLayout.height
+
+					ThreeLabelLayout {
+						id: generalLabelLayout
+
+						anchors {
+							left: parent.left
+							right: parent.right
+							verticalCenter: parent.verticalCenter
+						}
+						//% "General Values"
+						primaryText: qsTrId("dbus_serialbattery_general_values")
+						captionText: chargeModeDebug.valid ? chargeModeDebug.value : "--"
+						captionLabel.horizontalAlignment: Text.AlignHCenter
+					}
+				}
 
 				VeQuickItem {
 					id: chargeModeDebug
@@ -1021,50 +1090,59 @@ DeviceListPluginPage {
 				}
 			}
 
-			ListItem {
-				//% "Switch to Float Requirements"
-				text: qsTrId("dbus_serialbattery_general_switch_to_float_requirements")
-
-				bottomContentChildren: [
-					PrimaryListLabel {
-						topPadding: 0
-						bottomPadding: 0
-						color: Theme.color_font_secondary
-						text: chargeModeDebugFloat.valid ? chargeModeDebugFloat.value : "--"
-						horizontalAlignment: Text.AlignHCenter
-					}
-				]
-
+			ListSetting {
 				preferredVisible: chargeModeDebugFloat.valid && chargeModeDebugFloat.value !== ""
+				contentItem: Item {
+					implicitWidth: Theme.geometry_listItem_width
+					implicitHeight: generalFloatLabelLayout.height
 
-				VeQuickItem {
-					id: chargeModeDebugFloat
-					uid: root.bindPrefix + "/Info/ChargeModeDebugFloat"
-				}
-			}
+					ThreeLabelLayout {
+						id: generalFloatLabelLayout
 
-			ListItem {
-				//% "Switch to Bulk Requirements"
-				text: qsTrId("dbus_serialbattery_general_switch_to_bulk_requirements")
-
-				bottomContentChildren: [
-					PrimaryListLabel {
-						topPadding: 0
-						bottomPadding: 0
-						color: Theme.color_font_secondary
-						text: chargeModeDebugBulk.valid ? chargeModeDebugBulk.value : "--"
-						horizontalAlignment: Text.AlignHCenter
+						anchors {
+							left: parent.left
+							right: parent.right
+							verticalCenter: parent.verticalCenter
+						}
+						//% "Switch to Float Requirements"
+						primaryText: qsTrId("dbus_serialbattery_general_switch_to_float_requirements")
+						captionText: chargeModeDebugFloat.valid ? chargeModeDebugFloat.value : "--"
+						captionLabel.horizontalAlignment: Text.AlignHCenter
 					}
-				]
 
-				preferredVisible: chargeModeDebugBulk.valid && chargeModeDebugBulk.value !== ""
-
-				VeQuickItem {
-					id: chargeModeDebugBulk
-					uid: root.bindPrefix + "/Info/ChargeModeDebugBulk"
+					VeQuickItem {
+						id: chargeModeDebugFloat
+						uid: root.bindPrefix + "/Info/ChargeModeDebugFloat"
+					}
 				}
 			}
 
+			ListSetting {
+				preferredVisible: chargeModeDebugBulk.valid && chargeModeDebugBulk.value !== ""
+				contentItem: Item {
+					implicitWidth: Theme.geometry_listItem_width
+					implicitHeight: generalBulkLabelLayout.height
+
+					ThreeLabelLayout {
+						id: generalBulkLabelLayout
+
+						anchors {
+							left: parent.left
+							right: parent.right
+							verticalCenter: parent.verticalCenter
+						}
+						//% "Switch to Bulk Requirements"
+						primaryText: qsTrId("dbus_serialbattery_general_switch_to_bulk_requirements")
+						captionText: chargeModeDebugBulk.valid ? chargeModeDebugBulk.value : "--"
+						captionLabel.horizontalAlignment: Text.AlignHCenter
+					}
+
+					VeQuickItem {
+						id: chargeModeDebugBulk
+						uid: root.bindPrefix + "/Info/ChargeModeDebugBulk"
+					}
+				}
+			}
 		}
 	}
 }
