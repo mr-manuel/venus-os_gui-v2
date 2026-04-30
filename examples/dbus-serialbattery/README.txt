@@ -8,7 +8,7 @@ cd examples/dbus-serialbattery/
 
 python3 ../../tools/gui-v2-plugin-compiler.py --filter-empty-sources \
     --name dbus-serialbattery \
-    --min-required-version v1.2.18 \
+    --min-required-version v1.3.6 \
     --devicelist 0xba77 PageBatteryDbusSerialbattery.qml 'dbus_serialbattery_general_title' \
     --devicelist 0xba77 PageBatteryDbusSerialbatteryCellVoltages.qml 'dbus_serialbattery_cell_voltages_title' \
     --devicelist 0xba77 PageBatteryDbusSerialbatterySettings.qml 'dbus_serialbattery_settings_title' \

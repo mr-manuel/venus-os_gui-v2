@@ -14,8 +14,6 @@ DeviceListPluginPage {
 
 	readonly property string bindPrefix: root.device.serviceUid
 
-	property int visibleTimeToSocCount: 0
-
 	function getTimeToSocText(dataItem) {
 		if (dataItem.valid && Number.isInteger(Number(dataItem.value)) && dataItem.value > 0) {
 			return Utils.secondsToString(dataItem.value);
@@ -37,10 +35,6 @@ DeviceListPluginPage {
 		return count;
 	}
 
-	// Call this function whenever your model changes, e.g. onCompleted or on model update
-	// Component.onCompleted: updateVisibleTimeToSocCount()
-	// timeToSocModel.onCountChanged: updateVisibleTimeToSocCount()
-
 	GradientListView {
 		// if timeToSocModel is empty, show the noticeModel instead
 		id: settingsListView
@@ -49,7 +43,7 @@ DeviceListPluginPage {
 		VisibleItemModel {
 			id: noticeModel
 
-			ListItem {
+			ListText {
 				//% "No Time-to-Soc was enabled in the config file."
 				text: qsTrId("dbus_serialbattery_time_to_soc_not_available")
 			}

@@ -63,14 +63,6 @@ DeviceListPluginPage {
 				preferredVisible: hasSettingsItem.valid && hasSettingsItem.value === 1
 			}
 
-			// DEPERATED: will be removed in future versions, use Settings/ForceChargingOff instead
-			ListSwitch {
-				//% "Force charging off"
-				text: qsTrId("dbus_serialbattery_settings_force_charging_off")
-				dataItem.uid: root.bindPrefix + "/Io/ForceChargingOff"
-				preferredVisible: dataItem.valid
-			}
-
 			ListSwitch {
 				//% "Force charging off"
 				text: qsTrId("dbus_serialbattery_settings_force_charging_off")
@@ -78,26 +70,10 @@ DeviceListPluginPage {
 				preferredVisible: dataItem.valid
 			}
 
-			// DEPERATED: will be removed in future versions, use Settings/ForceDischargingOff instead
-			ListSwitch {
-				//% "Force discharging off"
-				text: qsTrId("dbus_serialbattery_settings_force_discharging_off")
-				dataItem.uid: root.bindPrefix + "/Io/ForceDischargingOff"
-				preferredVisible: dataItem.valid
-			}
-
 			ListSwitch {
 				//% "Force discharging off"
 				text: qsTrId("dbus_serialbattery_settings_force_discharging_off")
 				dataItem.uid: root.bindPrefix + "/Settings/ForceDischargingOff"
-				preferredVisible: dataItem.valid
-			}
-
-			// DEPERATED: will be removed in future versions, use Settings/TurnBalancingOff instead
-			ListSwitch {
-				//% "Turn balancing off"
-				text: qsTrId("dbus_serialbattery_settings_turn_balancing_off")
-				dataItem.uid: root.bindPrefix + "/Io/TurnBalancingOff"
 				preferredVisible: dataItem.valid
 			}
 
@@ -113,18 +89,6 @@ DeviceListPluginPage {
 				text: qsTrId("dbus_serialbattery_settings_turn_heating_off")
 				dataItem.uid: root.bindPrefix + "/Settings/TurnHeatingOff"
 				preferredVisible: dataItem.valid
-			}
-
-			// DEPERATED: will be removed in future versions, use Settings/ResetSoc instead
-			ListSpinBox {
-				//% "Reset SoC to"
-				text: qsTrId("dbus_serialbattery_settings_reset_soc_to")
-				dataItem.uid: root.bindPrefix + "/Settings/ResetSoc"
-				preferredVisible: dataItem.valid
-				suffix: "%"
-				from: 0
-				to: 100
-				stepSize: 1
 			}
 
 			ListButton {

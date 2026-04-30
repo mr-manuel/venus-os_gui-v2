@@ -4,6 +4,7 @@
 */
 
 import QtQuick
+import QtQuick.Layouts
 import Victron.VenusOS
 
 DeviceListPluginPage {
@@ -13,6 +14,38 @@ DeviceListPluginPage {
 	title: qsTrId("dbus_serialbattery_cell_voltages_title")
 
 	readonly property string bindPrefix: root.device.serviceUid
+
+	// Measures the widest possible cell row label ("Cells 29-32") without needing access to a delegate
+	Text {
+		id: cellLabelMeasure
+		visible: false
+		font: cellOverviewItem.font
+		//% "Cells %1-%2"
+		text: qsTrId("dbus_serialbattery_cell_voltages_cells").arg(29).arg(32)
+	}
+
+	readonly property real overviewLabelWidth: Math.max(
+		overviewTitleLabel.implicitWidth,
+		cellLabelMeasure.implicitWidth
+	)
+
+	readonly property int overviewColumnCount: {
+		if (contentRowOverview.width <= 0) return 5
+		const colWidth5 = (contentRowOverview.width - Theme.geometry_listItem_content_spacing * 4) / 5
+		return colWidth5 >= 80 ? 5 : 2
+	}
+	readonly property real overviewColumnWidth: contentRowOverview.width > 0
+		? (contentRowOverview.width - Theme.geometry_listItem_content_spacing * (overviewColumnCount - 1)) / overviewColumnCount
+		: 0
+
+	readonly property int cellColumnCount: {
+		if (contentRowOverview.width <= 0) return 4
+		const colWidth4 = (contentRowOverview.width - Theme.geometry_listItem_content_spacing * 3) / 4
+		return colWidth4 >= 80 ? 4 : 2
+	}
+	readonly property real cellColumnWidth: contentRowOverview.width > 0
+		? (contentRowOverview.width - Theme.geometry_listItem_content_spacing * (cellColumnCount - 1)) / cellColumnCount
+		: 0
 
 	property real cellVoltagesMean: NaN
 	readonly property int cellCount: 32
@@ -117,30 +150,37 @@ DeviceListPluginPage {
 
 			ListItem {
 				id: cellOverviewItem
-				//% "Overview"
-				text: qsTrId("dbus_serialbattery_cell_voltages_overview")
-				content.children: [
-					Row {
+				topPadding: Theme.geometry_listItem_content_verticalMargin / 2
+				bottomPadding: Theme.geometry_listItem_content_verticalMargin / 2
+
+				contentItem: RowLayout {
+					Label {
+						id: overviewTitleLabel
+						//% "Overview"
+						text: qsTrId("dbus_serialbattery_overview")
+						font: cellOverviewItem.font
+						Layout.minimumWidth: root.overviewLabelWidth
+					}
+
+					Flow {
 						id: contentRowOverview
-
-						readonly property real itemWidth: (width - (spacing * 4)) / 5
-
-						width: cellOverviewItem.maximumContentWidth
+						Layout.fillWidth: true
 						spacing: Theme.geometry_listItem_content_spacing
 
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellVoltageSum.value ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 2
+								decimals: 2
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Sum of all cell voltages
 								//% "Sum"
@@ -149,19 +189,20 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellVoltagesMean ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 3
+								decimals: 3
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Average of all cell voltages
 								//% "Mean"
@@ -170,19 +211,20 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellVoltageMin.value ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 3
+								decimals: 3
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Minimum cell voltage
 								//% "Min"
@@ -191,19 +233,20 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellVoltageMax.value ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 3
+								decimals: 3
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Maximum cell voltage
 								//% "Max"
@@ -212,19 +255,20 @@ DeviceListPluginPage {
 								font.pixelSize: Theme.font_size_caption
 							}
 						}
-						Column {
-							width: contentRowOverview.itemWidth
+						ColumnLayout {
+							width: root.overviewColumnWidth
+							spacing: 0
 
 							QuantityLabel {
-								width: parent.width
+								Layout.fillWidth: true
 								value: cellVoltageDiff.value ?? NaN
 								unit: VenusOS.Units_Volt_DC
-								precision: 3
+								decimals: 3
 								font.pixelSize: 22
 							}
 
 							Label {
-								width: parent.width
+								Layout.fillWidth: true
 								horizontalAlignment: Text.AlignHCenter
 								//: Difference between maximum and minimum cell voltage
 								//% "Diff"
@@ -234,10 +278,10 @@ DeviceListPluginPage {
 							}
 						}
 					}
-				]
+				}
 			}
 
-			Column {
+			ColumnLayout {
 				width: parent ? parent.width : 0
 				spacing: Theme.geometry_gradientList_spacing
 
@@ -249,8 +293,6 @@ DeviceListPluginPage {
 
 						property int outerIndex: model.index
 
-						//% "Cells %1-%2"
-						text: qsTrId("dbus_serialbattery_cell_voltages_cells").arg(model.index * 4 + 1).arg(model.index * 4 + 4)
 						preferredVisible: (
 							root.cellVoltageItems[outerIndex * 4 + 0] && root.cellVoltageItems[outerIndex * 4 + 0].valid
 						) || (
@@ -260,36 +302,47 @@ DeviceListPluginPage {
 						) || (
 							root.cellVoltageItems[outerIndex * 4 + 3] && root.cellVoltageItems[outerIndex * 4 + 3].valid
 						)
-						content.children: [
-							Row {
-								id: contentRow
+						topPadding: Theme.geometry_listItem_content_verticalMargin / 2
+						bottomPadding: Theme.geometry_listItem_content_verticalMargin / 2
 
-								readonly property real itemWidth: (width - (spacing * (cellRepeater.count - 1))) / cellRepeater.count
+						contentItem: RowLayout {
+							implicitHeight: contentRowCell.height
 
-								width: cellListItem.maximumContentWidth
-								// spacing: Theme.geometry_listItem_content_spacing
+							Label {
+								id: cellDetailsTitleLabel
+								//% "Cells %1-%2"
+								text: qsTrId("dbus_serialbattery_cell_voltages_cells").arg(model.index * 4 + 1).arg(model.index * 4 + 4)
+								font: cellOverviewItem.font
+								Layout.minimumWidth: root.overviewLabelWidth
+							}
+
+							Flow {
+								id: contentRowCell
+								Layout.fillWidth: true
+								spacing: Theme.geometry_listItem_content_spacing
 
 								Repeater {
 									id: cellRepeater
 									model: 4
-									delegate: Column {
-										width: contentRow.itemWidth
+									delegate: ColumnLayout {
+										width: root.cellColumnWidth
+										spacing: 0
 
 										readonly property var cellVoltageRef: root.cellVoltageItems[outerIndex * 4 + model.index]
 										readonly property real cellVoltageMeanDiff: cellVoltageRef && cellVoltageRef.valid ? (cellVoltageRef.value - cellVoltagesMean) : NaN
 
 										QuantityLabel {
-											width: parent.width
+											Layout.fillWidth: true
 											value: cellVoltageRef && cellVoltageRef.valid ? cellVoltageRef.value : NaN
 											unit: VenusOS.Units_Volt_DC
-											precision: 3
+											decimals: 3
 											font.pixelSize: 22
 											valueColor: getCellTextColor(outerIndex * 4 + model.index + 1)
-											visible: cellVoltageRef.valid
+											visible: cellVoltageRef && cellVoltageRef.valid
 										}
 
 										Label {
-											width: parent.width
+											Layout.fillWidth: true
 											horizontalAlignment: Text.AlignHCenter
 											text: isNaN(cellVoltageMeanDiff) ? "" : "Ø " + (cellVoltageMeanDiff > 0 ? "+" : "") + cellVoltageMeanDiff.toFixed(3) + " V"
 											color: isNaN(cellVoltageMeanDiff)
@@ -298,13 +351,12 @@ DeviceListPluginPage {
 													: cellVoltageMeanDiff < -cellVoltageDiffThreshold ? Theme.color_blue
 													: Theme.color_font_secondary)
 											font.pixelSize: Theme.font_size_caption
-											visible: cellVoltageRef.valid
+											visible: cellVoltageRef && cellVoltageRef.valid
 										}
 									}
 								}
-
 							}
-						]
+						}
 					}
 				}
 			}
