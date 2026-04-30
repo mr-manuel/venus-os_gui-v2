@@ -147,29 +147,8 @@ OverviewWidget {
 
 			anchors {
 				top: parent.top
-				left: parent.left
-				leftMargin: Theme.geometry_overviewPage_widget_content_horizontalMargin
+				bottom: parent.bottom
 				right: parent.right
-				rightMargin: Theme.geometry_overviewPage_widget_content_horizontalMargin
-				bottom: systemReasonText.top
-			}
-			text: Global.system.systemStateToText(Global.system.state)
-			font.pixelSize: Theme.font_overviewPage_widget_quantityLabel_maximumSize
-			minimumPixelSize: Theme.font_overviewPage_widget_quantityLabel_minimumSize
-			fontSizeMode: Text.Fit
-			wrapMode: Text.WordWrap
-			maximumLineCount: 4
-			elide: Text.ElideRight
-		},
-		Label {
-			id: systemReasonText
-
-			anchors {
-				left: parent.left
-				leftMargin: Theme.geometry_overviewPage_widget_content_horizontalMargin
-				right: parent.right
-				rightMargin: Theme.geometry_overviewPage_widget_content_horizontalMargin
-				bottom: efficiencyText.top
 			}
 			sourceComponent: ThreePhaseBarGauge {
 				valueType: VenusOS.Gauges_ValueType_RisingPercentage
@@ -178,7 +157,8 @@ OverviewWidget {
 				animationEnabled: root.animationEnabled
 				inOverviewWidget: true
 			}
-		},
+		}
+
 		Label {
 			id: efficiencyText
 
