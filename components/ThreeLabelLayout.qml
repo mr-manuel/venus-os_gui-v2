@@ -24,11 +24,14 @@ GridLayout {
 	id: root
 
 	required property string primaryText
-	required property string secondaryText
-	required property string captionText
+	property string secondaryText: ""
+	property string captionText: ""
 
-	required property font primaryFont
-	required property int primaryTextFormat
+	property font primaryFont
+	property int primaryTextFormat: Text.AutoText
+	property alias primaryLabel: primaryLabel
+	property alias secondaryLabel: secondaryLabel
+	property alias captionLabel: captionLabel
 	property alias secondaryTextColor: secondaryLabel.color
 	property bool stretchSecondaryText
 	property real topPadding
@@ -70,6 +73,8 @@ GridLayout {
 	}
 
 	CaptionLabel {
+		id: captionLabel
+
 		topPadding: Theme.geometry_listItem_content_verticalSpacing
 		bottomPadding: root.bottomPadding
 		text: root.captionText
