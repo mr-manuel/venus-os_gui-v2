@@ -127,6 +127,17 @@ Page {
 						pageProperties: ({"device": root.device})
 					}
 				}
+
+				Connections {
+					target: GuiPluginLoader
+					// When plugins reload, pop any plugin sub-page currently on the stack so that
+					// the next navigation opens a freshly compiled component from the new .rcc.
+					function onPluginsChanged() {
+						if (root.StackView.view) {
+							Global.pageManager.popPage(root)
+						}
+					}
+				}
 			}
 		}
 	}

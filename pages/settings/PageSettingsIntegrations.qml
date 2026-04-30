@@ -341,4 +341,15 @@ Page {
 			}
 		}
 	}
+
+	Connections {
+		target: GuiPluginLoader
+		// When plugins reload, pop any open plugin settings sub-page so the next
+		// navigation compiles fresh content from the newly registered .rcc.
+		function onPluginsChanged() {
+			if (root.StackView.view) {
+				Global.pageManager.popPage(root)
+			}
+		}
+	}
 }

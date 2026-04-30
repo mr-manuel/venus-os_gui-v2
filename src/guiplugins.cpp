@@ -98,9 +98,12 @@ namespace {
 	}
 }
 
-GuiPluginLoader* GuiPluginLoader::create(QQmlEngine *, QJSEngine *)
+GuiPluginLoader* GuiPluginLoader::create(QQmlEngine *engine, QJSEngine *)
 {
 	static GuiPluginLoader* instance = new GuiPluginLoader(nullptr);
+	if (engine && !instance->m_qmlEngine) {
+		instance->m_qmlEngine = engine;
+	}
 	return instance;
 }
 
@@ -223,6 +226,13 @@ void GuiPluginLoader::triggerWatchMqttPluginPaths()
 	m_invokeOnceTimer.start();
 }
 
+void GuiPluginLoader::onEnabledCustomisationsSynchronized(VeQItem::State state)
+{
+	if (state == VeQItem::Synchronized) {
+		triggerWatchMqttPluginPaths();
+	}
+}
+
 void GuiPluginLoader::watchMqttPluginPaths()
 {
 	BackendConnection *backend = BackendConnection::create();
@@ -258,6 +268,11 @@ void GuiPluginLoader::watchMqttPluginPaths()
 	}
 
 	connect(enabledCustomisationsItem, &VeQItem::valueChanged, this, &GuiPluginLoader::triggerWatchMqttPluginPaths, static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::QueuedConnection));
+	connect(enabledCustomisationsItem, &VeQItem::stateChanged, this, &GuiPluginLoader::onEnabledCustomisationsSynchronized, static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::QueuedConnection));
+	enabledCustomisationsItem->getValue(true);
+	if (enabledCustomisationsItem->getState() != VeQItem::Synchronized) {
+		return; // onEnabledCustomisationsSynchronized -> triggerWatchMqttPluginPaths will retry
+	}
 	const QStringList enabledCustomisations = enabledCustomisationsItem->getValue().toStringList();
 	if (enabledCustomisations.isEmpty()) {
 		qCInfo(venusGui) << "No enabled gui plugins available from MQTT.";
@@ -340,40 +355,74 @@ void GuiPluginMqttFetcher::start()
 	m_sha256 = values.value(QStringLiteral("sha256")).toString();
 	m_chunkCount = values.value(QStringLiteral("chunk_count")).toInt();
 	if (m_sha256.isEmpty() || m_chunkCount <= 0) {
-		qCWarning(venusGui) << "Info VeQItem does not contain required plugin data:" << m_name;
+		qCWarning(venusGui) << "Plugin" << m_name << "info item is missing required fields:"
+			<< "sha256:" << (m_sha256.isEmpty() ? QStringLiteral("<missing>") : m_sha256)
+			<< "chunk_count:" << m_chunkCount;
 		m_finished = true;
 		Q_EMIT failed();
 		return;
 	}
 
-	bool needFetch = false;
+	bool haveInitialData = true;
 	VeQItem *chunksItem = m_pluginBaseItem->itemGetOrCreate(QStringLiteral("Chunks"));
+	qCInfo(venusGui) << "Plugin" << m_name << "fetching" << m_chunkCount
+		<< "chunks from MQTT path" << m_pluginBaseItem->uniqueId();
 	for (int i = 0; i < m_chunkCount; ++i) {
 		VeQItem *chunkItem = chunksItem->itemGetOrCreate(QStringLiteral("%1").arg(i));
-		const QByteArray base64Data = chunkItem->getValue().toMap().value(QStringLiteral("base64")).toString().toUtf8();
+		const QVariant rawValue = chunkItem->getValue();
+		const QByteArray base64Data = rawValue.toMap().value(QStringLiteral("base64")).toString().toUtf8();
+		const char *typeName = rawValue.typeName();
 		m_chunkItems.insert(i, qMakePair(chunkItem, base64Data));
-
+		qCDebug(venusGui) << "Plugin" << m_name << "chunk" << i
+			<< "path:" << chunkItem->uniqueId()
+			<< "state:" << chunkItem->getState()
+			<< "cached:" << (base64Data.isEmpty()
+				? QStringLiteral("none (type=%1)").arg(QLatin1String(typeName ? typeName : "null"))
+				: QStringLiteral("%1 B").arg(base64Data.size()));
+		// Always connect so that stale-cache re-fetches (triggered by checkFinished on
+		// sha256 mismatch) can update stored data via valueChanged.
+		connect(chunkItem, &VeQItem::valueChanged, this, &GuiPluginMqttFetcher::chunkValueChanged,
+				static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::QueuedConnection));
 		if (base64Data.isEmpty()) {
-			needFetch = true;
-			connect(chunkItem, &VeQItem::valueChanged, this, &GuiPluginMqttFetcher::chunkValueChanged, static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::QueuedConnection));
-			chunkItem->getValue(true); // force read of chunk data
+			haveInitialData = false;
+			chunkItem->getValue(true); // force-read missing chunk immediately
 		}
 	}
 
-	if (!needFetch) {
+	m_timeout.start();
+	if (haveInitialData) {
+		// All chunks have cached data; try to assemble immediately.
+		// If sha256 matches the cache was fresh and we succeed right away.
+		// If it mismatches, checkFinished() triggers a force-read of all chunks.
 		checkFinished();
-	} else {
-		m_timeout.start();
 	}
 }
 
 void GuiPluginMqttFetcher::timeout()
 {
-	qCWarning(venusGui) << "Plugin fetch timed out: " << m_name;
+	int receivedCount = 0;
+	QStringList missingIndices;
+	for (auto it = m_chunkItems.cbegin(); it != m_chunkItems.cend(); ++it) {
+		if (it.value().second.isEmpty()) {
+			missingIndices.append(QString::number(it.key()));
+		} else {
+			++receivedCount;
+		}
+	}
+
+	if (missingIndices.isEmpty() && !m_chunkItems.isEmpty()) {
+		qCWarning(venusGui) << "Plugin" << m_name << "fetch timed out:"
+			<< "all" << m_chunkCount << "chunks received but sha256 never matched"
+			<< "(expected" << m_sha256 << ")";
+	} else {
+		qCWarning(venusGui) << "Plugin" << m_name << "fetch timed out:"
+			<< "received" << receivedCount << "of" << m_chunkCount << "chunks;"
+			<< "missing chunk indices:" << (missingIndices.isEmpty() ? QStringLiteral("<none>") : missingIndices.join(QStringLiteral(", ")));
+	}
+
 	m_timeout.stop();
 	m_finished = true;
 	Q_EMIT failed();
-	return;
 }
 
 void GuiPluginMqttFetcher::chunkValueChanged(const QVariant &value)
@@ -396,13 +445,17 @@ void GuiPluginMqttFetcher::chunkValueChanged(const QVariant &value)
 		}
 
 		if (matchingChunkNbr >= 0) {
+			qCDebug(venusGui) << "Plugin" << m_name << "chunk" << matchingChunkNbr
+				<< "received:" << base64Data.size() << "bytes";
 			m_chunkItems.insert(matchingChunkNbr, qMakePair(chunkItem, base64Data));
 			checkFinished();
 		} else {
-			qCWarning(venusGui) << "Received unknown chunk" << chunkItem->uniqueId();
+			qCWarning(venusGui) << "Plugin" << m_name << "received unknown chunk" << chunkItem->uniqueId();
 		}
 	} else {
-		qCWarning(venusGui) << "Received empty chunk" << chunkItem->uniqueId();
+		// Value arrived but contains no "base64" key — log the raw type so the format can be diagnosed.
+		qCWarning(venusGui) << "Plugin" << m_name << "received unparseable chunk" << chunkItem->uniqueId()
+			<< "- value type:" << value.typeName() << "value:" << value;
 	}
 }
 
@@ -444,10 +497,21 @@ void GuiPluginMqttFetcher::checkFinished()
 	// Check that the sha256 sum matches our assembled data.
 	const QString hash = QString::fromUtf8(QCryptographicHash::hash(assembled, QCryptographicHash::Sha256).toHex());
 	if (m_sha256.compare(hash, Qt::CaseInsensitive) != 0) {
-		qCWarning(venusGui) << "Unable to assemble plugin: " << m_name << " - sha256 doesn't match: " << hash << "!=" << m_sha256;
-		m_timeout.stop();
-		m_finished = true;
-		Q_EMIT failed();
+		if (!m_staleFetchTriggered) {
+			// First mismatch: the cache is stale. Reset all stored data and force-read
+			// every chunk from the broker. valueChanged will refill them as responses
+			// arrive; checkFinished() is called again after each update.
+			m_staleFetchTriggered = true;
+			qCInfo(venusGui) << "Plugin" << m_name
+				<< "sha256 mismatch (got" << hash << "expected" << m_sha256
+				<< ") - cached chunks are stale, requesting fresh data";
+			for (auto it = m_chunkItems.begin(); it != m_chunkItems.end(); ++it) {
+				it.value().second = QByteArray(); // clear stale data; wait for fresh valueChanged
+				it.value().first->getValue(true);
+			}
+		}
+		// Wait for valueChanged signals to deliver fresh chunk data. The timeout handles
+		// the case where the broker never responds.
 		return;
 	}
 
@@ -562,7 +626,7 @@ void GuiPluginLoader::populatePlugins()
 	for (qsizetype i = 0; i < array.size(); ++i) {
 		const QJsonValue v = array[i];
 		if (!v.isObject()) {
-			qCWarning(venusGui) << "Ignoring plugin at index" << i;
+			qCWarning(venusGui) << "Ignoring non-object entry at plugin index" << i;
 			continue;
 		}
 
@@ -576,7 +640,11 @@ void GuiPluginLoader::populatePlugins()
 				|| pluginResource.isEmpty()
 				|| pluginDecodedResource.isEmpty()
 				|| !plugin.contains(QStringLiteral("integrations"))) {
-			qCWarning(venusGui) << "Ignoring invalid plugin at index" << i;
+			qCWarning(venusGui) << "Ignoring invalid plugin at index" << i
+				<< "- name:" << (pluginName.isEmpty() ? QStringLiteral("<missing>") : pluginName)
+				<< "version:" << (pluginVersion.isEmpty() ? QStringLiteral("<missing>") : pluginVersion)
+				<< "resource:" << (pluginResource.isEmpty() ? QStringLiteral("<missing>") : pluginDecodedResource.isEmpty() ? QStringLiteral("<base64 decode failed>") : QStringLiteral("<ok>"))
+				<< "integrations:" << (plugin.contains(QStringLiteral("integrations")) ? QStringLiteral("<present>") : QStringLiteral("<missing>"));
 			continue;
 		}
 
@@ -642,16 +710,27 @@ void GuiPluginLoader::populatePlugins()
 			const QString integrationIcon = integration.value(QStringLiteral("icon")).toString();
 			const int integrationCardType = integration.value(QStringLiteral("cardType")).toInt(0);
 
-			if (integrationType == GuiPluginLoader::InvalidIntegrationType
-					|| integrationType > GuiPluginLoader::QuickAccessPaneCard
-					|| (integrationType == GuiPluginLoader::DeviceListSettingsPage
-						&& (integrationProductId.isEmpty() || integrationTitle.isEmpty()))
-					|| ((integrationType == GuiPluginLoader::NavigationPage || integrationType == GuiPluginLoader::QuickAccessPane)
-						&& (integrationIcon.isEmpty()))
-					|| (integrationType == GuiPluginLoader::QuickAccessPaneCard
-						&& (integrationCardType != GuiPluginLoader::ControlsCard && integrationCardType != GuiPluginLoader::SwitchesCard))
-					|| integrationUrl.isEmpty()) {
-				qCWarning(venusGui) << "Ignoring invalid integration at index" << j << "in plugin at index" << i << ":" << pluginName;
+			const bool invalidType = integrationType == GuiPluginLoader::InvalidIntegrationType
+					|| integrationType > GuiPluginLoader::QuickAccessPaneCard;
+			const bool missingDeviceListFields = integrationType == GuiPluginLoader::DeviceListSettingsPage
+					&& (integrationProductId.isEmpty() || integrationTitle.isEmpty());
+			const bool missingIcon = (integrationType == GuiPluginLoader::NavigationPage
+					|| integrationType == GuiPluginLoader::QuickAccessPane)
+					&& integrationIcon.isEmpty();
+			const bool invalidCardType = integrationType == GuiPluginLoader::QuickAccessPaneCard
+					&& integrationCardType != GuiPluginLoader::ControlsCard
+					&& integrationCardType != GuiPluginLoader::SwitchesCard;
+			if (invalidType || missingDeviceListFields || missingIcon || invalidCardType || integrationUrl.isEmpty()) {
+				QStringList reasons;
+				if (invalidType)             reasons << QStringLiteral("invalid type");
+				if (missingDeviceListFields) reasons << QStringLiteral("missing productId or title");
+				if (missingIcon)             reasons << QStringLiteral("missing icon");
+				if (invalidCardType)         reasons << QStringLiteral("invalid cardType");
+				if (integrationUrl.isEmpty()) reasons << QStringLiteral("missing url");
+				qCWarning(venusGui) << "Ignoring invalid integration at index" << j << "in plugin" << pluginName
+					<< "- type:" << integrationType
+					<< "url:" << (integrationUrl.isEmpty() ? QStringLiteral("<missing>") : integrationUrl)
+					<< "-" << reasons.join(QStringLiteral(", "));
 				continue;
 			}
 
@@ -704,7 +783,21 @@ void GuiPluginLoader::populatePlugins()
 	}
 
 	if (!m_plugins.isEmpty() || !data.isEmpty()) {
+		const bool isReload = !m_plugins.isEmpty();
 		m_plugins = data;
+		// On a reload the QML engine caches the old compiled component bytecode under
+		// the same qrc:// URLs. Clear it so that delegates recreated after
+		// pluginsChanged() pick up fresh content from the newly registered .rcc.
+		// unloadPluginData() already ran, so the old plugin component instances are
+		// gone; calling clearComponentCache() here is therefore safe.
+		if (isReload) {
+			if (m_qmlEngine) {
+				qCInfo(venusGui) << "Clearing QML component cache for plugin reload";
+				m_qmlEngine->clearComponentCache();
+			} else {
+				qCWarning(venusGui) << "Cannot clear QML component cache on plugin reload: engine reference not set";
+			}
+		}
 		Q_EMIT pluginsChanged();
 	}
 }

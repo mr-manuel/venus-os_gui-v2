@@ -86,6 +86,7 @@ Q_SIGNALS:
 private:
 	void timeoutMqttPluginPaths();
 	void triggerWatchMqttPluginPaths();
+	void onEnabledCustomisationsSynchronized(VeQItem::State state);
 	void watchMqttPluginPaths();
 	void watchPluginDirs(const QString &appsDir);
 	void readFromFilesystem(const QString &path);
@@ -106,6 +107,7 @@ private:
 	QTimer m_invokeOnceTimer;
 	QTimer m_timeoutTimer;
 	bool m_busy = true;
+	QQmlEngine *m_qmlEngine = nullptr;
 };
 
 /*
@@ -358,6 +360,7 @@ private:
 	QByteArray m_data;
 	int m_chunkCount = 0;
 	bool m_finished = false;
+	bool m_staleFetchTriggered = false;
 };
 
 } /* VenusOS */
