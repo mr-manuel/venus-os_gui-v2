@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QFileSystemWatcher>
 #include <QCryptographicHash>
+#include <QVersionNumber>
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -804,11 +805,34 @@ void GuiPluginLoader::populatePlugins()
 
 bool GuiPluginLoader::loadPluginData(const GuiPlugin &plugin)
 {
-	// ensure that the version matches.
-	bool guiv2VersionMeetsRequirements = true; // TODO
-	if (!guiv2VersionMeetsRequirements) {
-		qCWarning(venusGui) << "Required version mismatch!";
-		return false;
+	// Check that the running GUIv2 version satisfies the plugin's declared requirements.
+	// Both boundaries are inclusive: minRequiredVersion <= guiv2 <= maxRequiredVersion.
+	static const QVersionNumber guiv2Version(PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH);
+
+	auto parseVersion = [](const QString &raw) -> QVersionNumber {
+		// Strip optional leading 'v'/'V' prefix (e.g. "v1.3.6" -> "1.3.6").
+		const QString s = (raw.startsWith('v') || raw.startsWith('V')) ? raw.mid(1) : raw;
+		return QVersionNumber::fromString(s);
+	};
+
+	if (!plugin.m_minRequiredVersion.isEmpty()) {
+		const QVersionNumber minVer = parseVersion(plugin.m_minRequiredVersion);
+		if (!minVer.isNull() && guiv2Version < minVer) {
+			qCWarning(venusGui) << "Plugin" << plugin.name()
+				<< "requires GUIv2 >=" << plugin.m_minRequiredVersion
+				<< "but running" << guiv2Version.toString();
+			return false;
+		}
+	}
+
+	if (!plugin.m_maxRequiredVersion.isEmpty()) {
+		const QVersionNumber maxVer = parseVersion(plugin.m_maxRequiredVersion);
+		if (!maxVer.isNull() && guiv2Version > maxVer) {
+			qCWarning(venusGui) << "Plugin" << plugin.name()
+				<< "requires GUIv2 <=" << plugin.m_maxRequiredVersion
+				<< "but running" << guiv2Version.toString();
+			return false;
+		}
 	}
 
 	// load the resource data.
