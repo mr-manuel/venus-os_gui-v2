@@ -2,11 +2,9 @@
     "files": [
         ":/data/mock/conf/services/dbus-serialbattery.json",
         ":/data/mock/conf/services/ess.json",
-        ":/data/mock/conf/services/lynxbms.json",
         ":/data/mock/conf/services/mppt1.json",
         ":/data/mock/conf/services/multiplus.json",
         ":/data/mock/conf/services/pvinverter.json",
-        ":/data/mock/conf/services/pylontech.json",
         ":/data/mock/conf/setup-common.json",
         ":/data/mock/conf/setup-essential-loads.json"
     ],
@@ -47,6 +45,9 @@
             "/Ac/In/0/ServiceType": "vebus",
             "/Ac/In/0/Source": 1,
             "/ActiveBatteryService": "com.victronenergy.battery/1",
+            "/ActiveBmsInstance": 1,
+            "/ActiveBmsService": "com.victronenergy.battery.ttyUSB0",
+            "/AvailableBmsServices": "[{'instance': 1,'name': 'Serial Battery(Full Settings)'}]",
             "/Hub": 4,
             "/SystemType": "ESS"
         }

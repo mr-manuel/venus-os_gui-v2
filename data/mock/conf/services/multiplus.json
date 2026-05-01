@@ -103,7 +103,7 @@
         "/Devices/0/Settings/UpsFunction": false,
         "/Devices/0/Settings/WriteProgress": 100,
         "/Ess/AcPowerSetpoint": 0,
-        "/Ess/ActiveSocLimit": 20,
+        "/Ess/ActiveSocLimit": 15,
         "/Ess/DisableFeedIn": 1,
         "/Ess/InverterPowerSetpoint": null,
         "/Ess/Sustain": 0,
