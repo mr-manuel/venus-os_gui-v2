@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
+      pages: write
+      id-token: write
 
     steps:
       - name: Checkout repository and submodules
@@ -68,6 +70,76 @@ jobs:
           name: venus-webassembly
           path: build-wasm_files_to_copy
           retention-days: 5
+
+      - name: Prepare GitHub Pages deployment
+        if: github.ref == 'refs/heads/dbus-serialbattery/main'
+        run: |
+          mkdir -p gh-pages
+          cp -r build-wasm_files_to_copy/wasm/. gh-pages/
+          mv gh-pages/venus-gui-v2.wasm.gz gh-pages/venus-gui-v2.wasm
+          python3 - <<'PYEOF'
+          import sys
+          with open('gh-pages/index.html') as f:
+              content = f.read()
+          # Use the comment that immediately follows the init() searchParams declaration
+          # to uniquely identify it (there is a second searchParams in preloadWasm).
+          needle = (
+              'const searchParams = new URLSearchParams(window.location.search);\n'
+              '\n'
+              '            // If mqtt param is set'
+          )
+          if needle not in content:
+              print('ERROR: patch target not found in index.html', file=sys.stderr)
+              sys.exit(1)
+          replacement = (
+              'const searchParams = new URLSearchParams(window.location.search);\n'
+              '            searchParams.set("mockdata", "dbus-serialbattery");\n'
+              '\n'
+              '            // If mqtt param is set'
+          )
+          content = content.replace(needle, replacement, 1)
+          # Patch 2: decompress gzip WASM in the browser (served without Content-Encoding header on GitHub Pages)
+          needle2 = 'const reader = response.body.getReader();'
+          replacement2 = "const reader = response.body.pipeThrough(new DecompressionStream('gzip')).getReader();"
+          if needle2 not in content:
+              print('ERROR: DecompressionStream patch target not found in index.html', file=sys.stderr)
+              sys.exit(1)
+          content = content.replace(needle2, replacement2, 1)
+          # Patch 3: inject Matomo analytics before </body>
+          matomo = (
+              '    <script>\n'
+              '        var _paq = window._paq = window._paq || [];\n'
+              '        _paq.push(["disableCookies"]);\n'
+              '        _paq.push(["trackPageView"]);\n'
+              '        _paq.push(["enableLinkTracking"]);\n'
+              '        (function() {\n'
+              '            var u="//github.md0.eu/matomo/";\n'
+              '            _paq.push(["setTrackerUrl", u+"matomo.php"]);\n'
+              '            _paq.push(["setSiteId", "2"]);\n'
+              '            var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0];\n'
+              '            g.async=true; g.src=u+"matomo.js"; s.parentNode.insertBefore(g,s);\n'
+              '        })();\n'
+              '    </script>\n'
+              '</body>'
+          )
+          if '</body>' not in content:
+              print('ERROR: </body> not found in index.html', file=sys.stderr)
+              sys.exit(1)
+          content = content.replace('</body>', matomo, 1)
+          with open('gh-pages/index.html', 'w') as f:
+              f.write(content)
+          print('index.html patched: mockdata set, DecompressionStream injected, Matomo added')
+          PYEOF
+
+      - name: Upload GitHub Pages artifact
+        if: github.ref == 'refs/heads/dbus-serialbattery/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./gh-pages
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/dbus-serialbattery/main'
+        uses: actions/deploy-pages@v4
 
       - name: Release - ZIP wasm files
         if: startsWith(github.ref, 'refs/tags/')

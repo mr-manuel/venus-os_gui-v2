@@ -1,0 +1,54 @@
+{
+    "files": [
+        ":/data/mock/conf/services/dbus-serialbattery.json",
+        ":/data/mock/conf/services/ess.json",
+        ":/data/mock/conf/services/lynxbms.json",
+        ":/data/mock/conf/services/mppt1.json",
+        ":/data/mock/conf/services/multiplus.json",
+        ":/data/mock/conf/services/pvinverter.json",
+        ":/data/mock/conf/services/pylontech.json",
+        ":/data/mock/conf/setup-common.json",
+        ":/data/mock/conf/setup-essential-loads.json"
+    ],
+    "setup": {
+        "com.victronenergy.settings": {
+            "/Settings/Alarm/Audible": 1,
+            "/Settings/Alarm/System/GridLost": 0,
+            "/Settings/CGwacs/BatteryLife/MinimumSocLimit": 15,
+            "/Settings/CGwacs/MaxChargePower": -1,
+            "/Settings/CGwacs/MaxDischargePower": -1,
+            "/Settings/CGwacs/Hub4Mode": 1,
+            "/Settings/LEDs/Enable": 1,
+            "/Settings/Gui/ColorScheme": 0,
+            "/Settings/Gui/NewGuiLastAnnouncement": 0,
+            "/Settings/Gui/RemoteConsoleColorMode": 1,
+            "/Settings/Gui/RunningVersion": 2,
+            "/Settings/Gui2/EnableAnimations": 1,
+            "/Settings/Gui2/OnBoarding": 2,
+            "/Settings/Gui2/ShowInverterChargerEfficiency": 1,
+            "/Settings/Gui2/StartPage": 1,
+            "/Settings/Gui2/StartPageName": "{\"main\":{\"page\":\"OverviewPage.qml\",\"properties\":{}},\"stack\":[]}",
+            "/Settings/Gui2/StartPageTimeout": 0,
+            "/Settings/System/AccessLevel": 2,
+            "/Settings/System/SSHLocal": 1,
+            "/Settings/SystemSetup/AcInput1": 1,
+            "/Settings/SystemSetup/AcInput2": 0,
+            "/Settings/SystemSetup/HasDcSystem": 0,
+            "/Settings/SystemSetup/HasAcInLoads": 1,
+            "/Settings/SystemSetup/HasAcOutSystem": 1,
+            "/Settings/SystemSetup/SharedTemperatureSense": 0,
+            "/Settings/SystemSetup/SharedVoltageSense": 1,
+            "/Settings/SystemSetup/SystemName": ""
+        },
+        "com.victronenergy.system": {
+            "/Ac/In/0/Connected": 1,
+            "/Ac/In/0/DeviceInstance": 275,
+            "/Ac/In/0/ServiceName": "com.victronenergy.vebus.ttyS2",
+            "/Ac/In/0/ServiceType": "vebus",
+            "/Ac/In/0/Source": 1,
+            "/ActiveBatteryService": "com.victronenergy.battery/1",
+            "/Hub": 4,
+            "/SystemType": "ESS"
+        }
+    }
+}

@@ -23,6 +23,7 @@ set(VictronMock_QML_MODULE_SOURCES
 
 SET(VictronMock_QML_MODULE_RESOURCES
     data/mock/conf/barebones.json
+    data/mock/conf/dbus-serialbattery.json
     data/mock/conf/dc-only.json
     data/mock/conf/maximal.json
     data/mock/conf/multi-rs.json
@@ -30,7 +31,9 @@ SET(VictronMock_QML_MODULE_RESOURCES
     data/mock/conf/switch-pane.json
     data/mock/conf/services/alternator.json
     data/mock/conf/services/dcgenset.json
+    data/mock/conf/services/dbus-serialbattery.json
     data/mock/conf/services/dcload-fridge.json
+    data/mock/conf/services/multiplus.json
     data/mock/conf/services/dcsystem1.json
     data/mock/conf/services/dcsystem2.json
     data/mock/conf/services/dse-genset.json

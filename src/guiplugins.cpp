@@ -94,6 +94,12 @@ namespace {
 		}
 		return QStringList();
 #else
+		// For WASM mock mode and other non-GX, non-desktop builds:
+		// check for embedded mock plugin resources.
+		Q_UNUSED(appsDirPath)
+		if (QDir(QStringLiteral(":/data/mock/plugins")).exists()) {
+			return QStringList { QStringLiteral(":/data/mock/plugins") };
+		}
 		return QStringList();
 #endif
 	}
@@ -121,7 +127,7 @@ GuiPluginLoader::GuiPluginLoader(QObject *parent)
 
 	const bool loadFromMqtt =
 #if defined(VENUS_WEBASSEMBLY_BUILD)
-		true;  // always load from MQTT
+		BackendConnection::create()->type() == BackendConnection::MqttSource;
 #elif defined(VENUS_GX_BUILD)
 		false; // always load from filesystem
 #else
