@@ -32,6 +32,37 @@ SET(VictronMock_QML_MODULE_RESOURCES
     data/mock/conf/services/alternator.json
     data/mock/conf/services/dcgenset.json
     data/mock/conf/services/dbus-serialbattery.json
+    data/mock/conf/services/dbus-serialbattery-ant.json
+    data/mock/conf/services/dbus-serialbattery-daly.json
+    data/mock/conf/services/dbus-serialbattery-daly_can.json
+    data/mock/conf/services/dbus-serialbattery-daren_485.json
+    data/mock/conf/services/dbus-serialbattery-ecs.json
+    data/mock/conf/services/dbus-serialbattery-eg4_lifepower.json
+    data/mock/conf/services/dbus-serialbattery-eg4_ll.json
+    data/mock/conf/services/dbus-serialbattery-felicity.json
+    data/mock/conf/services/dbus-serialbattery-generic_aiobmsble.json
+    data/mock/conf/services/dbus-serialbattery-generic_mqtt.json
+    data/mock/conf/services/dbus-serialbattery-heltecmodbus.json
+    data/mock/conf/services/dbus-serialbattery-hlpdatabms4s.json
+    data/mock/conf/services/dbus-serialbattery-jkbms.json
+    data/mock/conf/services/dbus-serialbattery-jkbms_ble.json
+    data/mock/conf/services/dbus-serialbattery-jkbms_can.json
+    data/mock/conf/services/dbus-serialbattery-jkbms_pb.json
+    data/mock/conf/services/dbus-serialbattery-kilovault_ble.json
+    data/mock/conf/services/dbus-serialbattery-ks48100.json
+    data/mock/conf/services/dbus-serialbattery-litime_ble.json
+    data/mock/conf/services/dbus-serialbattery-lltjbd.json
+    data/mock/conf/services/dbus-serialbattery-lltjbd_ble.json
+    data/mock/conf/services/dbus-serialbattery-lltjbd_can.json
+    data/mock/conf/services/dbus-serialbattery-lltjbd_up16s.json
+    data/mock/conf/services/dbus-serialbattery-mnb.json
+    data/mock/conf/services/dbus-serialbattery-pace.json
+    data/mock/conf/services/dbus-serialbattery-renogy.json
+    data/mock/conf/services/dbus-serialbattery-rv_c_can.json
+    data/mock/conf/services/dbus-serialbattery-seplos.json
+    data/mock/conf/services/dbus-serialbattery-seplosv3.json
+    data/mock/conf/services/dbus-serialbattery-sinowealth.json
+    data/mock/conf/services/dbus-serialbattery-ubms_can.json
     data/mock/conf/services/dcload-fridge.json
     data/mock/conf/services/multiplus.json
     data/mock/conf/services/dcsystem1.json
